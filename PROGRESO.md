@@ -103,8 +103,9 @@ docker run -p 8080:8080 gestiona-commerce
 ---
 
 ## 6. Pendientes y bloqueos actuales
-- **Pendiente:** La estudiante debe tomar las 4 capturas de la Etapa 1, hacer los commits y el tag.
-- **Pendiente:** Instalar JDK 17 localmente (el proyecto compila con release 17; JDK 26 funciona pero mejor tener 17 disponible).
+- **Pendiente:** La estudiante debe tomar las 4 capturas de la Etapa 1 para el informe/Obsidian (detalladas en `docs/evidencias/etapa-1.md`).
+- **Completado:** Commits de Paso 1 y Paso 2 realizados y tag `etapa-1` pusheado a GitHub (`main`). Render desplegará automáticamente la nueva interfaz.
+- **Pendiente:** Instalar JDK 17 localmente si se desea ejecutar en NetBeans local (aunque compila con release 17; JDK 26 funciona).
 - **Nota:** El archivo `.env` ya existe en la raíz con las credenciales de Supabase (Session Pooler). Se usará en la Etapa 2.
 
 ---
