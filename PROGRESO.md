@@ -51,8 +51,9 @@
 - [x] **Títulos dinámicos de formularios:** `<title>` adaptativo ("Nuevo/Editar usuario/cliente/proveedor/producto | Gestiona Commerce").
 - [x] **Seguridad en Login:** Mensaje de bloqueo unificado `"Cuenta bloqueada. Contacte al administrador del sistema."` y eliminación de credenciales de prueba o textos técnicos en `index.jsp`.
 - [x] **Licencias de terceros:** Atribución visible retirada de los pies de página; creado `docs/LICENSE-THIRD-PARTY.md` documentando Tabler UI, Bootstrap 5 y la fuente Inter bajo sus licencias originales.
-- [x] **Páginas de error personalizadas y seguridad de trazas:** Creadas `src/main/webapp/WEB-INF/views/error/404.jsp` y `500.jsp`, registradas en `web.xml`. Cero fugas de excepciones o trazas técnicas (`getMessage()`, `printStackTrace()`) hacia la pantalla de usuario.
-- [x] **Tag final de entrega:** `avance-1-final`.
+- [x] **Páginas de error personalizadas y seguridad de trazas:** Creadas `src/main/webapp/WEB-INF/views/error/404.jsp`, `500.jsp` y `403.jsp`, registradas en `web.xml`. Cero fugas de excepciones o trazas técnicas (`getMessage()`, `printStackTrace()`) hacia la pantalla de usuario.
+- [x] **Filtro de Autorización por Permisos (`FiltroAutorizacion.java`):** Filtro Jakarta Servlet que intercepta accesos directos por URL en `/bienvenida`, `/usuarios/*`, `/clientes/*`, `/proveedores/*` y `/productos/*`. Valida sesión activa (redirige a `/login`), evalúa permisos según operación (consulta vs modificación) y emite error 403 con registro en el log del servidor.
+- [x] **Tags finales de entrega:** `avance-1-final` y `avance-1-final-v2`.
 
 ---
 
@@ -86,6 +87,7 @@
 | DEC-25 | Enlace unificado entre todos los módulos en la barra superior. | Experiencia de usuario completa y sin enlaces rotos entre Usuarios, Clientes, Proveedores y Productos. |
 | DEC-26 | Navegación y KPI basados en `Usuario.tienePermiso(String)`. | Desacopla las vistas del nombre de los roles, respetando el control de acceso granular canónico. |
 | DEC-27 | Ocultamiento total de detalles de desarrollo en vistas públicas. | Garantiza aspecto de aplicación de producción para usuario final. |
+| DEC-28 | `FiltroAutorizacion` como filtro central de control de acceso. | Garantiza protección de rutas directas por URL sin depender exclusivamente de enlaces de la interfaz. |
 
 ---
 
@@ -99,8 +101,9 @@
 | `docs/LICENSE-THIRD-PARTY.md` | Licencias de librerías de terceros (Tabler UI, Bootstrap 5, Inter font). |
 | `pom.xml` | Proyecto Maven WAR (Java 17, Jakarta Servlet 6.0, JSTL 3.0, PostgreSQL JDBC 42.7.2, BCrypt 0.4). |
 | `Dockerfile` | Build multi-stage: Maven compila → Tomcat 10.1 sirve el WAR. |
-| `src/main/webapp/WEB-INF/web.xml` | Configuración de servlets y mapeo de errores 404 y 500. |
-| `src/main/webapp/WEB-INF/views/error/*.jsp` | Páginas de error 404 y 500 con diseño sobrio y sin detalles del servidor. |
+| `src/main/webapp/WEB-INF/web.xml` | Configuración de servlets, filtro de autorización y mapeo de errores 403, 404 y 500. |
+| `src/main/webapp/WEB-INF/views/error/*.jsp` | Páginas de error 403, 404 y 500 con diseño sobrio y sin detalles del servidor. |
+| `src/main/java/com/gestiona/commerce/filter/FiltroAutorizacion.java` | Filtro Jakarta Servlet de autenticación y autorización por permisos. |
 | `src/main/java/com/gestiona/commerce/config/ConexionBD.java` | Patrón creacional **Singleton** para conexión JDBC a Supabase. |
 | `src/main/java/com/gestiona/commerce/util/PasswordUtil.java` | Utilidad de hashing y verificación con BCrypt (rounds=12). |
 | `src/main/java/com/gestiona/commerce/model/entity/*.java` | Entidades POJO (`Usuario`, `DatosPersonales`, `Rol`, `Cliente`, `Proveedor`, `Producto`, etc.). |
@@ -131,14 +134,14 @@
 ---
 
 ## 6. Pendientes y decisiones abiertas
-- **Hallazgo de Seguridad (Instrucción 3 de limpieza):**
-  Actualmente los Servlets (`UsuarioServlet`, `ClienteServlet`, `ProveedorServlet`, `ProductoServlet`) validan únicamente que exista una sesión activa (`session.getAttribute("usuarioLogueado") != null`), pero **no validan si el usuario posee el permiso correspondiente si ingresa la URL directamente en el navegador**. Tampoco existe un `Filter` de autorización registrado.
-  *Estado:* Reportado a la estudiante según lo solicitado, a la espera de su confirmación para proceder con la implementación de un filtro o validación por servlet.
+- **Migración de enlaces de desactivación a método POST (Requisito 4):**
+  Actualmente, las acciones de desactivación (`accion=eliminar`) se invocan vía enlace GET en las tablas de listados. Aunque el `FiltroAutorizacion` ya las protege exigiendo el permiso `GESTIONAR_*`, las buenas prácticas de seguridad (OWASP / RFC 7231) recomiendan que cualquier cambio de estado se realice exclusivamente mediante formularios `POST` para prevenir ejecuciones no intencionales por rastreadores o prefetching.
+  *Estado:* Reportado con propuesta de implementación a la espera de aprobación de la estudiante.
 
 ---
 
 ## 7. Próximo paso exacto
-- **¡Avance 1 Completado y Limpio!**
-- Realizar `git push origin main --tags` hacia GitHub para activar el redespliegue final en Render.
-- Tomar las capturas de pantalla de la interfaz comercial para la carpeta de evidencias y memoria del informe.
+- **¡Avance 1 Completado, Limpio y Asegurado!**
+- Realizar `git push origin main --tags` hacia GitHub para desplegar `avance-1-final-v2` en Render.
+- Tomar las capturas de pantalla de la interfaz comercial y la nueva pantalla 403.
 - No avanzar a ventas, facturación ni reportes (Etapa 6 en adelante) hasta que el docente evalúe el Avance 1.

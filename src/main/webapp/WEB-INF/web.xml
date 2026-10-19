@@ -76,7 +76,29 @@
         <url-pattern>/productos</url-pattern>
     </servlet-mapping>
 
+    <!-- Filtro de autorización granular por permisos -->
+    <filter>
+        <filter-name>FiltroAutorizacion</filter-name>
+        <filter-class>com.gestiona.commerce.filter.FiltroAutorizacion</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>FiltroAutorizacion</filter-name>
+        <url-pattern>/bienvenida</url-pattern>
+        <url-pattern>/usuarios</url-pattern>
+        <url-pattern>/usuarios/*</url-pattern>
+        <url-pattern>/clientes</url-pattern>
+        <url-pattern>/clientes/*</url-pattern>
+        <url-pattern>/proveedores</url-pattern>
+        <url-pattern>/proveedores/*</url-pattern>
+        <url-pattern>/productos</url-pattern>
+        <url-pattern>/productos/*</url-pattern>
+    </filter-mapping>
+
     <!-- Páginas de error personalizadas sin detalles técnicos -->
+    <error-page>
+        <error-code>403</error-code>
+        <location>/WEB-INF/views/error/403.jsp</location>
+    </error-page>
     <error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/views/error/404.jsp</location>
