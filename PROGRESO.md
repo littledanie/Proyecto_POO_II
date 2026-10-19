@@ -9,12 +9,12 @@
 - **Estudiante:** Daniela
 - **Curso:** Programación Orientada a Objetos II (POO II)
 - **Alcance actual:** Avance 1 (Etapas 1 a 5 de `Etapas.md`, Pasos 1 al 12)
-- **Fase actual:** Etapa 1 completada — pendiente de capturas, commits y tag por parte de la estudiante
+- **Fase actual:** Etapa 2 completada — código y scripts listos, pendiente de ejecución del SQL en Supabase, configuración de variables en Render y toma de capturas
 - **Servidor / Runtime:** Java 17 + Apache Tomcat 10.1 (`jakarta.*`) + Maven WAR
-- **Base de Datos:** PostgreSQL en Supabase (acceso JDBC puro) — proyecto creado, aún sin conectar al código
-- **Hosting:** Render (Web Service con Docker, plan Free) — **link público verificado y funcional**
-- **IDE:** Apache NetBeans 31 con JDK 26 instalado (el proyecto compila con `maven.compiler.release=17`; JDK 17 se instalará también)
-- **Repositorio:** `https://github.com/littledanie/Proyecto_POO_II` — conectado a Render para auto-deploy
+- **Base de Datos:** PostgreSQL en Supabase (acceso JDBC puro 42.7) — script `database/etapa-2.sql` creado
+- **Hosting:** Render (Web Service con Docker multi-stage, plan Free) — auto-deploy conectado a GitHub
+- **IDE:** Apache NetBeans con soporte Maven y JDK 17
+- **Repositorio:** `https://github.com/littledanie/Proyecto_POO_II`
 
 ---
 
@@ -25,7 +25,7 @@
 - [x] **Paso 2:** Publicación en hosting — `Dockerfile` multi-stage (Maven + Tomcat 10.1), `.dockerignore`, servicio en Render verificado con link público funcional.
 
 ### Etapa 2 — Verificación de la conexión con la BD
-- [ ] **Paso 3:** Verificación de la conexión con la BD (Supabase, tabla provisional `usuarios`, contraseña texto plano, validación desde Servlet).
+- [x] **Paso 3:** Verificación de la conexión con la BD (script `database/etapa-2.sql`, driver PostgreSQL en `pom.xml`, conexión directa `ConexionDirectaBD`, validación con `PreparedStatement`, `LoginServlet`, vista protegida `WEB-INF/views/bienvenida.jsp` y `BienvenidaServlet`).
 
 ### Etapa 3 — Singleton, reestructuración de usuarios y validaciones
 - [ ] **Paso 4:** Aplicar patrón creacional Singleton en la conexión a BD (`ConexionBD`).
@@ -51,12 +51,16 @@
 | DEC-02 | Avance 1 restringido únicamente a Etapas 1–5 (hasta Paso 12). | Excluir ventas, reportes y tecnologías no solicitadas según requerimientos. |
 | DEC-03 | Trabajo incremental estricto: Paso a paso con commit individual en español y tag por etapa. | La estudiante requiere evidencias pedagógicas paso a paso para su evaluación. |
 | DEC-04 | Archivos de indicaciones (`AGENTS.md`, `Etapas.md`, `13_2_...md`) en la raíz del proyecto. | La raíz del workspace es el repositorio clonado; simplifica rutas y acceso. |
-| DEC-05 | Paleta slate (#334155) + verde stock (#059669) con tipografía Inter. | Basada en búsqueda de la skill de diseño (perfil "Inventory & Stock Management"); evita degradados morados genéricos. |
+| DEC-05 | Paleta slate (#334155) + verde stock (#059669) con tipografía Inter. | Basada en la skill de diseño (perfil "Inventory & Stock Management"); evita degradados morados genéricos. |
 | DEC-06 | Login con CSS propio (sin Bootstrap) para Etapa 1; Bootstrap se usará desde Etapa 4 (dashboard). | Máximo control visual en el login; Bootstrap con plantilla dashboard llega en la etapa que corresponde. |
 | DEC-07 | JSTL 3.0: API (`jakarta.servlet.jsp.jstl-api:3.0.0`) + implementación Glassfish (`jakarta.servlet.jsp.jstl:3.0.1`) en pom.xml. | Tomcat 10.1 no incluye JSTL; se necesitan ambas dependencias para que `<c:...>` funcione. |
-| DEC-08 | `maven.compiler.release=17` en pom.xml; Dockerfile usa `jdk17`. | La PC tiene JDK 26 pero el proyecto debe compilar con API de Java 17 por requisito del curso. |
+| DEC-08 | `maven.compiler.release=17` en pom.xml; Dockerfile usa `jdk17`. | El proyecto debe compilar con API de Java 17 por requisito del curso. |
 | DEC-09 | `bienvenida.jsp` dentro de `WEB-INF/views/`; acceso solo vía forward desde Servlet, nunca sendRedirect directo. | Proteger las vistas internas; patrón MVC estricto. |
 | DEC-10 | Primer deploy en Render con JSP mínimo antes de diseñar el login. | Validar que el hosting ejecuta JSP/Tomcat antes de invertir tiempo en diseño (AGENTS.md §10). |
+| DEC-11 | Driver PostgreSQL JDBC `42.7.2` agregado en `pom.xml`. | Requerido para conectar Tomcat 10.1 con Supabase mediante JDBC estándar. |
+| DEC-12 | Conexión directa en `ConexionDirectaBD` con lectura dual (`System.getenv` + fallback `.env`). | Facilita ejecución tanto en contenedor (Render) como en entorno local sin comprometer credenciales en Git. Conexión directa obligatoria en Etapa 2 antes de migrar a Singleton en Etapa 3. |
+| DEC-13 | Redirección PRG (Post-Redirect-Get) tras login hacia `/bienvenida`. | Evita el reenvío del formulario de autenticación si el usuario refresca con F5. |
+| DEC-14 | Mensaje de error genérico en el login ("Usuario o contraseña incorrectos"). | Cumplimiento del estándar de seguridad (AGENTS.md §7) para no revelar si falló el usuario o la clave. |
 
 ---
 
@@ -67,16 +71,22 @@
 | `Etapas.md` | Guía de etapas 1 a 5 y checklist de entrega. |
 | `13_2_Modulos_basicos_Formas_Normales.md` | Esquema de BD canónico, datos de prueba y arquitectura de clases. |
 | `PROGRESO.md` | Estado actual y registro de traspaso entre modelos. |
-| `pom.xml` | Proyecto Maven WAR (Java 17, Jakarta Servlet 6.0, JSTL 3.0). |
+| `pom.xml` | Proyecto Maven WAR (Java 17, Jakarta Servlet 6.0, JSTL 3.0, PostgreSQL JDBC 42.7.2). |
 | `Dockerfile` | Build multi-stage: Maven compila → Tomcat 10.1 sirve el WAR. |
-| `.dockerignore` | Excluye secretos, IDE y docs del contexto Docker. |
-| `.gitignore` | Protege `.env`, `target/`, archivos de IDE y Obsidian. |
-| `.env.example` | Plantilla de variables de entorno (sin valores reales). |
-| `src/main/webapp/index.jsp` | Página de login (formulario de autenticación). |
-| `src/main/webapp/assets/css/login.css` | Estilos del login (paleta slate/verde, Inter, responsive). |
-| `src/main/webapp/WEB-INF/web.xml` | Descriptor de despliegue Jakarta EE 6.0. |
-| `docs/despliegue.md` | Instrucciones de despliegue en Render con Docker. |
-| `docs/evidencias/etapa-1.md` | Evidencias paso a paso con marcadores de captura. |
+| `database/etapa-2.sql` | DDL provisional de `usuarios` y 6 usuarios de prueba con contraseña texto plano. |
+| `src/main/java/com/gestiona/commerce/config/ConexionDirectaBD.java` | Conexión JDBC directa a Supabase (sin Singleton aún). |
+| `src/main/java/com/gestiona/commerce/model/entity/Usuario.java` | Entidad POJO de usuario para la Etapa 2. |
+| `src/main/java/com/gestiona/commerce/service/LoginService.java` | Servicio de autenticación con `PreparedStatement`. |
+| `src/main/java/com/gestiona/commerce/controller/LoginServlet.java` | Controlador de autenticación (`/login`). |
+| `src/main/java/com/gestiona/commerce/controller/BienvenidaServlet.java` | Controlador que protege `/WEB-INF/views/bienvenida.jsp`. |
+| `src/main/java/com/gestiona/commerce/controller/LogoutServlet.java` | Controlador para invalidar sesión (`/logout`). |
+| `src/main/webapp/index.jsp` | Formulario de login. |
+| `src/main/webapp/assets/css/login.css` | Estilos del login. |
+| `src/main/webapp/WEB-INF/views/bienvenida.jsp` | Vista de bienvenida protegida tras login exitoso. |
+| `src/main/webapp/assets/css/bienvenida.css` | Estilos de la vista de bienvenida. |
+| `src/main/webapp/WEB-INF/web.xml` | Descriptor de despliegue con servlets mapeados. |
+| `docs/evidencias/etapa-1.md` | Evidencias de la Etapa 1. |
+| `docs/evidencias/etapa-2.md` | Evidencias y marcadores de captura de la Etapa 2. |
 
 ---
 
@@ -84,32 +94,35 @@
 
 ### Local (NetBeans + Tomcat)
 1. Abrir el proyecto en Apache NetBeans como proyecto Maven.
-2. Configurar Tomcat 10.1 como servidor en NetBeans.
-3. Ejecutar (Run) — NetBeans compila con Maven embebido y despliega el WAR en Tomcat.
+2. Asegurar que las variables de entorno `DB_URL`, `DB_USER` y `DB_PASSWORD` estén configuradas (o el archivo `.env` en la raíz).
+3. Ejecutar (Run) en Apache Tomcat 10.1.
 4. Acceder a `http://localhost:8080/`.
 
-### Docker local
-```bash
-docker build -t gestiona-commerce .
-docker run -p 8080:8080 gestiona-commerce
-```
-
 ### Render (producción)
-- Push a `main` → Render auto-deploy → URL pública asignada.
-
-### Variables de entorno (necesarias a partir de Etapa 2)
-- `DB_URL`, `DB_USER`, `DB_PASSWORD` — ver `.env.example`.
+1. En el panel de Render, ir al servicio `gestiona-commerce` -> **Environment**.
+2. Agregar las variables:
+   - `DB_URL`: `jdbc:postgresql://<HOST_POOLER>:5432/postgres?sslmode=require`
+   - `DB_USER`: `postgres.<PROJECT_REF>`
+   - `DB_PASSWORD`: `<PASSWORD_DE_SUPABASE>`
+3. Guardar cambios (Render re-desplegará automáticamente).
+4. Acceder al link público.
 
 ---
 
 ## 6. Pendientes y bloqueos actuales
-- **Pendiente:** La estudiante debe tomar las 4 capturas de la Etapa 1 para el informe/Obsidian (detalladas en `docs/evidencias/etapa-1.md`).
-- **Completado:** Commits de Paso 1 y Paso 2 realizados y tag `etapa-1` pusheado a GitHub (`main`). Render desplegará automáticamente la nueva interfaz.
-- **Pendiente:** Instalar JDK 17 localmente si se desea ejecutar en NetBeans local (aunque compila con release 17; JDK 26 funciona).
-- **Nota:** El archivo `.env` ya existe en la raíz con las credenciales de Supabase (Session Pooler). Se usará en la Etapa 2.
+- **Acción requerida de la estudiante en Supabase:**
+  1. Abrir Supabase SQL Editor y ejecutar el script `database/etapa-2.sql`.
+  2. Si no recuerda la contraseña de la base de datos o sale error de autenticación, restablecerla en **Project Settings -> Database -> Reset database password**, y actualizarla en el `.env` local y en las variables de entorno de Render.
+- **Acción requerida de la estudiante en Render:**
+  Configurar las 3 variables de entorno (`DB_URL`, `DB_USER`, `DB_PASSWORD`) en la sección **Environment** del Web Service.
+- **Acción requerida de evidencias:**
+  Tomar las 5 capturas indicadas en `docs/evidencias/etapa-2.md`.
 
 ---
 
 ## 7. Próximo paso exacto
-- **Acción:** Tras los commits y tag de la Etapa 1, iniciar **Etapa 2, Paso 3**: crear script SQL `database/etapa-2.sql` con tabla provisional `usuarios`, agregar dependencia del driver PostgreSQL al `pom.xml`, crear clase de conexión directa (sin Singleton aún), crear `LoginServlet.java` que valide contra la BD, y crear `bienvenida.jsp` dentro de `WEB-INF/views/` (acceso solo por forward).
-- **Sobre variables de entorno:** Indicar a la estudiante paso a paso cómo cargarlas en NetBeans/Tomcat local (Windows) y cómo configurarlas en Render.
+- Tras la validación de la estudiante de las capturas y pruebas de la Etapa 2, iniciar la **Etapa 3**:
+  1. **Paso 4:** Implementar el patrón creacional **Singleton** en `com.gestiona.commerce.config.ConexionBD`.
+  2. **Paso 5:** Reestructurar la base de datos a 3FN (`database/etapa-3.sql`) con las tablas `rol`, `permiso`, `rol_permiso` y `usuario`.
+  3. **Paso 6:** Migrar contraseñas a BCrypt con sal (clase `SeedUsuarios` y `PasswordUtil`) e implementar bloqueo automático tras 3 intentos fallidos.
+  4. **Paso 7:** Redactar el análisis en bloques del patrón Singleton en `docs/analisis/singleton.md`.
