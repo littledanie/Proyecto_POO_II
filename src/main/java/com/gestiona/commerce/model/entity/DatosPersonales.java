@@ -52,6 +52,10 @@ public class DatosPersonales implements Serializable {
         return nombres + " " + apellidos;
     }
 
+    public String getNombreDistrito() {
+        return (distrito != null) ? distrito.getNombreDistrito() : null;
+    }
+
     // --- Getters y Setters ---
 
     public Integer getIdDatosPersonales() {

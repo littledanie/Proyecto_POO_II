@@ -173,20 +173,25 @@
                                                         <c:out value="${p.razonSocial}"/>
                                                     </td>
                                                     <td>
-                                                        <c:out value="${p.datosPersonales.nombreCompleto}"/>
-                                                        <c:if test="${not empty p.datosPersonales.dni}">
-                                                            <span class="text-muted small d-block font-monospace">DNI: <c:out value="${p.datosPersonales.dni}"/></span>
-                                                        </c:if>
+                                                        <c:choose>
+                                                            <c:when test="${not empty p.datosPersonales}">
+                                                                <c:out value="${p.datosPersonales.nombreCompleto}"/>
+                                                                <c:if test="${not empty p.datosPersonales.dni}">
+                                                                    <span class="text-muted small d-block font-monospace">DNI: <c:out value="${p.datosPersonales.dni}"/></span>
+                                                                </c:if>
+                                                            </c:when>
+                                                            <c:otherwise>-</c:otherwise>
+                                                        </c:choose>
                                                     </td>
                                                     <td>
-                                                        <c:out value="${p.datosPersonales.telefonoPrincipal != null ? p.datosPersonales.telefonoPrincipal : '-'}"/>
+                                                        <c:out value="${not empty p.datosPersonales && not empty p.datosPersonales.telefonoPrincipal ? p.datosPersonales.telefonoPrincipal : '-'}"/>
                                                     </td>
                                                     <td>
-                                                        <c:out value="${p.datosPersonales.correoPrincipal != null ? p.datosPersonales.correoPrincipal : '-'}"/>
+                                                        <c:out value="${not empty p.datosPersonales && not empty p.datosPersonales.correoPrincipal ? p.datosPersonales.correoPrincipal : '-'}"/>
                                                     </td>
                                                     <td>
                                                         <span class="small text-muted">
-                                                            <c:out value="${p.datosPersonales.nombreDistrito != null ? p.datosPersonales.nombreDistrito : '-'}"/>
+                                                            <c:out value="${not empty p.datosPersonales && not empty p.datosPersonales.distrito ? p.datosPersonales.distrito.nombreDistrito : '-'}"/>
                                                         </span>
                                                     </td>
                                                     <td>
