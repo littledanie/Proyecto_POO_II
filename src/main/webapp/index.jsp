@@ -83,6 +83,12 @@
                     </div>
                 </c:if>
 
+                <c:if test="${bloqueado}">
+                    <div class="alert alert-error" style="background-color: #fee2e2; border-color: #f87171; color: #991b1b; margin-bottom: 1.25rem;">
+                        <strong>Cuenta Bloqueada:</strong> Se han agotado los 3 intentos permitidos. Por seguridad, la sesión y el formulario han sido deshabilitados.
+                    </div>
+                </c:if>
+
                 <%-- Formulario de login --%>
                 <form id="loginForm" action="${pageContext.request.contextPath}/login" method="POST"
                       novalidate autocomplete="on">
@@ -103,6 +109,7 @@
                                    autocomplete="username"
                                    required
                                    autofocus
+                                   <c:if test="${bloqueado}">disabled</c:if>
                                    value="<c:out value='${param.usuario}'/>">
                         </div>
                     </div>
@@ -122,11 +129,13 @@
                                    class="form-input"
                                    placeholder="Ingresa tu contraseña"
                                    autocomplete="current-password"
+                                   <c:if test="${bloqueado}">disabled</c:if>
                                    required>
                             <button type="button"
                                     id="togglePassword"
                                     class="toggle-password"
                                     aria-label="Mostrar contraseña"
+                                    <c:if test="${bloqueado}">disabled style="display:none;"</c:if>
                                     title="Mostrar contraseña">
                                 <svg id="iconEyeOpen" class="eye-icon" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
@@ -155,8 +164,12 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="btnLogin" class="btn-login">
-                        Ingresar
+                    <button type="submit" id="btnLogin" class="btn-login"
+                            <c:if test="${bloqueado}">disabled style="opacity: 0.5; cursor: not-allowed;"</c:if>>
+                        <c:choose>
+                            <c:when test="${bloqueado}">Cuenta Bloqueada</c:when>
+                            <c:otherwise>Ingresar</c:otherwise>
+                        </c:choose>
                     </button>
                 </form>
 
