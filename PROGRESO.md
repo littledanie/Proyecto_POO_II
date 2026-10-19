@@ -9,9 +9,9 @@
 - **Estudiante:** Daniela
 - **Curso:** Programación Orientada a Objetos II (POO II)
 - **Alcance actual:** Avance 1 (Etapas 1 a 5 de `Etapas.md`, Pasos 1 al 12)
-- **Fase actual:** Etapa 3 completada — Singleton, esquema 3FN (RBAC), BCrypt, bloqueo automático tras 3 intentos y análisis en bloques listos. Pendiente de ejecución de `database/etapa-3.sql` en Supabase y toma de capturas.
+- **Fase actual:** Etapa 4 completada — Dashboard y CRUD de usuarios con patrón Repository, plantilla Tabler UI / Bootstrap 5, datos personales, contacto y ubicación listos. Pendiente de ejecución de `database/etapa-4.sql` en Supabase y toma de capturas.
 - **Servidor / Runtime:** Java 17 + Apache Tomcat 10.1 (`jakarta.*`) + Maven WAR
-- **Base de Datos:** PostgreSQL en Supabase (acceso JDBC puro 42.7 con Singleton)
+- **Base de Datos:** PostgreSQL en Supabase (acceso JDBC puro 42.7 con Singleton y Repository)
 - **Hosting:** Render (Web Service con Docker multi-stage, plan Free) — auto-deploy conectado a GitHub
 - **IDE:** Apache NetBeans con soporte Maven y JDK 17
 - **Repositorio:** `https://github.com/littledanie/Proyecto_POO_II`
@@ -34,9 +34,9 @@
 - [x] **Paso 7:** Análisis en bloques del patrón Singleton (`docs/analisis/singleton.md`) listo para copiar en Google Docs.
 
 ### Etapa 4 — Dashboard y CRUD de usuarios con Repository
-- [ ] **Paso 8:** Dashboard con plantilla Bootstrap para CRUD de usuarios (incorporando datos personales, contacto y ubicación).
-- [ ] **Paso 9:** Aplicación del patrón Repository en el CRUD de usuarios.
-- [ ] **Paso 10:** Análisis en bloques del patrón Repository usuarios (`docs/analisis/repository-usuarios.md`).
+- [x] **Paso 8:** Dashboard con plantilla Bootstrap para CRUD de usuarios con datos personales, contacto y ubicación (`database/etapa-4.sql`, vistas `usuarios-lista.jsp` y `usuarios-form.jsp` con Tabler UI / Bootstrap 5, licencia MIT).
+- [x] **Paso 9:** Aplicación del patrón Repository en el CRUD de usuarios (`UsuarioRepository` y `UsuarioRepositoryImpl` con transacciones ACID y eliminación lógica).
+- [x] **Paso 10:** Análisis en bloques del patrón Repository usuarios (`docs/analisis/repository-usuarios.md`) listo para Google Docs.
 
 ### Etapa 5 — CRUD de clientes, proveedores y mercadería
 - [ ] **Paso 11:** CRUD con Repository para Clientes, Proveedores y Mercadería/Productos/Insumos/Servicios.
@@ -65,6 +65,10 @@
 | DEC-16 | BCrypt (`jbcrypt:0.4`) con factor de costo 12 para todas las contraseñas en BD. | Cumplimiento estricto de seguridad: sal criptográfica aleatoria, jamás texto plano. |
 | DEC-17 | Generación de hashes reales mediante `SeedUsuarios` a partir de datos canónicos. | Se prohíbe pegar hashes simulados; los 6 usuarios de prueba se generaron computacionalmente con BCrypt. |
 | DEC-18 | Bloqueo persistente de cuenta en BD tras 3 intentos fallidos consecutivos. | Cumplimiento de regla de negocio evaluada: la cuenta se marca `bloqueado = true` en PostgreSQL y se inhabilita el login. |
+| DEC-19 | Plantilla de Dashboard: **Tabler UI (Licencia MIT, basada en Bootstrap 5)**. | Cumple el requisito de AGENTS.md §9 de usar una plantilla Bootstrap de licencia libre sin librerías obsoletas como jQuery. |
+| DEC-20 | Entidad compartida `datos_personales` vinculada a `usuario` mediante `id_datos_personales` (Decisión D2). | Normalización en 3FN evitando redundancia de nombres, DNI, correos, teléfonos y direcciones. |
+| DEC-21 | Patrón Repository (`UsuarioRepository` y `UsuarioRepositoryImpl`). | Desacopla la lógica comercial de la persistencia JDBC y maneja transacciones atómicas con `commit()` y `rollback()`. |
+| DEC-22 | Eliminación lógica (`estado = 'Inactivo'`) en el CRUD de usuarios. | Preserva la integridad referencial y la trazabilidad de auditoría según AGENTS.md §6.6. |
 
 ---
 
@@ -78,34 +82,39 @@
 | `pom.xml` | Proyecto Maven WAR (Java 17, Jakarta Servlet 6.0, JSTL 3.0, PostgreSQL JDBC 42.7.2, BCrypt 0.4). |
 | `Dockerfile` | Build multi-stage: Maven compila → Tomcat 10.1 sirve el WAR. |
 | `database/etapa-2.sql` | DDL provisional Etapa 2 (texto plano para evidenciar evolución pedagógica). |
-| `database/etapa-3.sql` | DDL 3FN (`rol`, `permiso`, `rol_permiso`, `usuario`) con hashes BCrypt reales y control de bloqueo. |
+| `database/etapa-3.sql` | DDL 3FN (`rol`, `permiso`, `rol_permiso`, `usuario`) con hashes BCrypt y bloqueo. |
+| `database/etapa-4.sql` | DDL personas, contacto, ubicación y vinculación a `usuario` (`id_datos_personales`). |
 | `src/main/java/com/gestiona/commerce/config/ConexionBD.java` | Patrón creacional **Singleton** para conexión JDBC a Supabase. |
 | `src/main/java/com/gestiona/commerce/util/PasswordUtil.java` | Utilidad de hashing y verificación con BCrypt (rounds=12). |
 | `src/main/java/com/gestiona/commerce/util/SeedUsuarios.java` | Generador canónico de hashes para inserción en BD. |
 | `src/main/java/com/gestiona/commerce/model/entity/Rol.java` | Entidad POJO Rol (RBAC). |
 | `src/main/java/com/gestiona/commerce/model/entity/Permiso.java` | Entidad POJO Permiso (RBAC). |
-| `src/main/java/com/gestiona/commerce/model/entity/Usuario.java` | Entidad POJO Usuario con soporte 3FN, rol y bloqueo. |
-| `src/main/java/com/gestiona/commerce/service/ResultadoLogin.java` | Encapsulador de estados de autenticación (éxito, inválido, bloqueado). |
-| `src/main/java/com/gestiona/commerce/service/LoginService.java` | Lógica de autenticación con BCrypt, contador y bloqueo tras 3 intentos. |
-| `src/main/java/com/gestiona/commerce/controller/LoginServlet.java` | Controlador de autenticación con manejo de bloqueo y PRG. |
-| `src/main/java/com/gestiona/commerce/controller/BienvenidaServlet.java` | Controlador que protege `/WEB-INF/views/bienvenida.jsp`. |
-| `src/main/java/com/gestiona/commerce/controller/LogoutServlet.java` | Controlador para invalidar sesión (`/logout`). |
-| `src/main/webapp/index.jsp` | Formulario de login con soporte para bloqueo visual y deshabilitación. |
-| `src/main/webapp/assets/css/login.css` | Estilos del login. |
-| `src/main/webapp/WEB-INF/views/bienvenida.jsp` | Vista de bienvenida mostrando el rol y estado Singleton + BCrypt. |
-| `src/main/webapp/assets/css/bienvenida.css` | Estilos de la vista de bienvenida. |
+| `src/main/java/com/gestiona/commerce/model/entity/Sexo.java` | Entidad POJO Sexo. |
+| `src/main/java/com/gestiona/commerce/model/entity/EstadoCivil.java` | Entidad POJO Estado Civil. |
+| `src/main/java/com/gestiona/commerce/model/entity/Distrito.java` | Entidad POJO Distrito (catálogo geográfico). |
+| `src/main/java/com/gestiona/commerce/model/entity/DatosPersonales.java` | Entidad POJO DatosPersonales (persona compartida D2). |
+| `src/main/java/com/gestiona/commerce/model/entity/Usuario.java` | Entidad POJO Usuario con soporte 3FN, rol, datos personales y bloqueo. |
+| `src/main/java/com/gestiona/commerce/model/repository/UsuarioRepository.java` | Interfaz del patrón **Repository** para Usuario. |
+| `src/main/java/com/gestiona/commerce/model/repository/UsuarioRepositoryImpl.java` | Implementación JDBC pura del patrón Repository con transacciones ACID. |
+| `src/main/java/com/gestiona/commerce/service/UsuarioService.java` | Servicio de negocio para CRUD de usuarios, validaciones y BCrypt. |
+| `src/main/java/com/gestiona/commerce/controller/UsuarioServlet.java` | Controlador `/usuarios` para el CRUD del dashboard administrativo. |
+| `src/main/webapp/WEB-INF/views/dashboard/usuarios-lista.jsp` | Vista de listado del CRUD con plantilla Tabler UI / Bootstrap 5. |
+| `src/main/webapp/WEB-INF/views/dashboard/usuarios-form.jsp` | Formulario de alta y edición con secciones de cuenta, persona y ubicación. |
+| `src/main/webapp/WEB-INF/views/bienvenida.jsp` | Vista de bienvenida con botón de acceso al Dashboard. |
 | `src/main/webapp/WEB-INF/web.xml` | Descriptor de despliegue con servlets mapeados. |
-| `docs/analisis/singleton.md` | Análisis formal en 5 bloques del patrón Singleton para informe. |
+| `docs/analisis/singleton.md` | Análisis en bloques del patrón Singleton. |
+| `docs/analisis/repository-usuarios.md` | Análisis en bloques del patrón Repository de usuarios. |
 | `docs/evidencias/etapa-1.md` | Evidencias y capturas de la Etapa 1. |
 | `docs/evidencias/etapa-2.md` | Evidencias y capturas de la Etapa 2. |
 | `docs/evidencias/etapa-3.md` | Evidencias y capturas de la Etapa 3. |
+| `docs/evidencias/etapa-4.md` | Evidencias y capturas de la Etapa 4. |
 
 ---
 
 ## 5. Cómo ejecutar el proyecto
 
 ### Supabase
-- Ejecutar el script `database/etapa-3.sql` en Supabase SQL Editor para crear las tablas 3FN e insertar los datos con hashes BCrypt.
+- Ejecutar `database/etapa-4.sql` en Supabase SQL Editor para crear las tablas de datos personales, contacto, ubicación y vincular `id_datos_personales` en `usuario`.
 
 ### Local (NetBeans + Tomcat)
 1. Abrir el proyecto en Apache NetBeans como proyecto Maven.
@@ -113,20 +122,19 @@
 3. Ejecutar (Run) en Apache Tomcat 10.1.
 
 ### Render (producción)
-- Con las variables `DB_URL`, `DB_USER` y `DB_PASSWORD` en **Environment**, Render auto-despliega cada push a `main`.
+- Al hacer push a `main`, Render auto-despliega el servicio. Acceder a `/usuarios` tras iniciar sesión.
 
 ---
 
 ## 6. Pendientes y bloqueos actuales
 - **Acción requerida de la estudiante en Supabase:**
-  Ejecutar el script `database/etapa-3.sql` en el SQL Editor de Supabase.
+  Ejecutar el script `database/etapa-4.sql` en el SQL Editor de Supabase.
 - **Acción requerida de evidencias:**
-  Tomar las 6 capturas indicadas en `docs/evidencias/etapa-3.md`.
+  Tomar las 6 capturas indicadas en `docs/evidencias/etapa-4.md`.
 
 ---
 
 ## 7. Próximo paso exacto
-- Tras la confirmación de la estudiante, iniciar la **Etapa 4 (Dashboard y CRUD de usuarios con Repository)**:
-  1. **Paso 8:** Seleccionar e integrar una plantilla de dashboard Bootstrap de licencia libre (AdminLTE o Tabler) para el CRUD de usuarios con datos personales, contacto y ubicación.
-  2. **Paso 9:** Aplicar el patrón creacional/estructural **Repository** (`UsuarioRepository` y `UsuarioRepositoryImpl`).
-  3. **Paso 10:** Elaborar el análisis en bloques de código del patrón Repository de usuarios en `docs/analisis/repository-usuarios.md`.
+- Tras la confirmación de la estudiante, iniciar la **Etapa 5 (CRUD de clientes, proveedores y mercadería/productos/insumos/servicios con Repository)**:
+  1. **Paso 11:** Crear script `database/etapa-5.sql` (tablas `categoria`, `marca`, `unidad_medida`, `producto`, `cliente`, `proveedor`), implementar repositorios y servicios (`ClienteRepository`, `ProveedorRepository`, `ProductoRepository`), y vistas de gestión en el dashboard.
+  2. **Paso 12:** Redactar el análisis en bloques de código del patrón Repository para entidades comerciales en `docs/analisis/repository-clientes-proveedores-productos.md`.
