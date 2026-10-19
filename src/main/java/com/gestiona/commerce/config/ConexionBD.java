@@ -73,11 +73,31 @@ public class ConexionBD {
      */
     public Connection getConexion() throws SQLException {
         String url = getEnvVariable("DB_URL");
+        if (url == null || url.trim().isEmpty()) {
+            // Soporte fallback para alias común DATABASE_URL
+            url = getEnvVariable("DATABASE_URL");
+        }
+
+        // Si la URL viene en formato URI postgresql:// convertir a formato JDBC jdbc:postgresql://
+        if (url != null && !url.startsWith("jdbc:")) {
+            if (url.startsWith("postgres://")) {
+                url = "jdbc:postgresql://" + url.substring("postgres://".length());
+            } else if (url.startsWith("postgresql://")) {
+                url = "jdbc:postgresql://" + url.substring("postgresql://".length());
+            }
+        }
+
         String user = getEnvVariable("DB_USER");
         String password = getEnvVariable("DB_PASSWORD");
 
+        // Diagnóstico seguro en logs del servidor (sin exponer la contraseña)
+        System.out.println("[ConexionBD] Estado de credenciales: " +
+                "URL=" + (url != null ? "PRESENTE" : "FALTA") + ", " +
+                "USER=" + (user != null ? "PRESENTE" : "FALTA") + ", " +
+                "PASSWORD=" + (password != null ? "PRESENTE" : "FALTA"));
+
         if (url == null || url.trim().isEmpty()) {
-            throw new SQLException("Falta la variable de entorno DB_URL para conectar a la base de datos.");
+            throw new SQLException("Falta la variable de entorno DB_URL (o DATABASE_URL) para conectar a la base de datos.");
         }
         if (user == null || user.trim().isEmpty()) {
             throw new SQLException("Falta la variable de entorno DB_USER para conectar a la base de datos.");
@@ -99,12 +119,24 @@ public class ConexionBD {
         // 1. Prioridad: Variables de entorno del sistema operativo o contenedor Docker
         String valor = System.getenv(clave);
         if (valor != null && !valor.trim().isEmpty()) {
-            return valor.trim();
+            valor = valor.trim();
+            // Limpieza de posibles comillas accidentales
+            if ((valor.startsWith("\"") && valor.endsWith("\"")) || (valor.startsWith("'") && valor.endsWith("'"))) {
+                valor = valor.substring(1, valor.length() - 1);
+            }
+            return valor;
         }
 
         // 2. Fallback: Variables locales de .env (para desarrollo en NetBeans)
-        if (envCache != null) {
-            return envCache.get(clave);
+        if (envCache != null && envCache.containsKey(clave)) {
+            String v = envCache.get(clave);
+            if (v != null) {
+                v = v.trim();
+                if ((v.startsWith("\"") && v.endsWith("\"")) || (v.startsWith("'") && v.endsWith("'"))) {
+                    v = v.substring(1, v.length() - 1);
+                }
+                return v;
+            }
         }
         return null;
     }

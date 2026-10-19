@@ -18,8 +18,9 @@ RUN mvn clean package -DskipTests -B
 # === ETAPA 2: imagen de ejecución ===
 FROM tomcat:10.1-jdk17
 
-# Eliminar la aplicación ROOT por defecto de Tomcat
-RUN rm -rf /usr/local/tomcat/webapps/ROOT
+# Eliminar la aplicación ROOT por defecto de Tomcat y desactivar puerto de shutdown
+RUN rm -rf /usr/local/tomcat/webapps/ROOT && \
+    sed -i 's/port="8005"/port="-1"/' /usr/local/tomcat/conf/server.xml
 
 # Copiar el WAR generado como ROOT.war (se sirve en /)
 COPY --from=build /app/target/gestiona-commerce.war /usr/local/tomcat/webapps/ROOT.war
