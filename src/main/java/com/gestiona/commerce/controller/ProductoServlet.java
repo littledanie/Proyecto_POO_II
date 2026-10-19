@@ -60,7 +60,7 @@ public class ProductoServlet extends HttpServlet {
                 try {
                     int id = Integer.parseInt(request.getParameter("id"));
                     productoService.eliminarLogico(id);
-                    request.getSession().setAttribute("exitoMensaje", "Producto desactivado lógicamente (Inactivo).");
+                    request.getSession().setAttribute("exitoMensaje", "Producto desactivado correctamente.");
                 } catch (NumberFormatException ignored) {}
                 response.sendRedirect(request.getContextPath() + "/productos");
                 break;

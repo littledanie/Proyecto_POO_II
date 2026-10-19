@@ -62,7 +62,7 @@ public class ProveedorServlet extends HttpServlet {
                 try {
                     int id = Integer.parseInt(request.getParameter("id"));
                     proveedorService.eliminarLogico(id);
-                    request.getSession().setAttribute("exitoMensaje", "Proveedor desactivado (Inactivo).");
+                    request.getSession().setAttribute("exitoMensaje", "Proveedor desactivado correctamente.");
                 } catch (NumberFormatException ignored) {}
                 response.sendRedirect(request.getContextPath() + "/proveedores");
                 break;

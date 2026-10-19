@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><c:choose><c:when test="${esEdicion}">Editar Proveedor</c:when><c:otherwise>Nuevo Proveedor</c:otherwise></c:choose> — Gestiona Commerce</title>
+    <title><c:choose><c:when test="${esEdicion}">Editar proveedor</c:when><c:otherwise>Nuevo proveedor</c:otherwise></c:choose> | Gestiona Commerce</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Tabler UI (Licencia MIT, Bootstrap 5) -->
+    <!-- Tabler UI (Bootstrap 5) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css">
 
     <style>
@@ -56,7 +56,7 @@
                 <div class="container-xl">
                     <div class="row g-2 align-items-center">
                         <div class="col">
-                            <div class="page-pretitle text-muted">CRUD de Proveedores &bull; Etapa 5 (Patrón Repository)</div>
+                            <div class="page-pretitle text-muted">Compras y Abastecimiento</div>
                             <h2 class="page-title text-dark">
                                 <c:choose>
                                     <c:when test="${esEdicion}">Editar Proveedor: <c:out value="${proveedorEditar.razonSocial}"/></c:when>
@@ -182,7 +182,7 @@
             <!-- Footer -->
             <footer class="footer footer-transparent d-print-none py-3 border-top mt-auto">
                 <div class="container-xl text-center text-muted small">
-                    Gestiona Commerce &bull; Etapa 5 &bull; Arquitectura MVC + Patrón Repository &bull; Tabler UI (MIT)
+                    &copy; 2026 Gestiona Commerce &mdash; Sistema de Gestión Comercial
                 </div>
             </footer>
         </div>

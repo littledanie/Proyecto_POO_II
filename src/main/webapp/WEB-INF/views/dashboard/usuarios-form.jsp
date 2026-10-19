@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><c:choose><c:when test="${esEdicion}">Editar Usuario</c:when><c:otherwise>Nuevo Usuario</c:otherwise></c:choose> — Gestiona Commerce</title>
+    <title><c:choose><c:when test="${esEdicion}">Editar usuario</c:when><c:otherwise>Nuevo usuario</c:otherwise></c:choose> | Gestiona Commerce</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,7 +61,7 @@
                 <div class="container-xl">
                     <div class="row g-2 align-items-center">
                         <div class="col">
-                            <div class="page-pretitle text-muted">CRUD de Usuarios &bull; Etapa 4</div>
+                            <div class="page-pretitle text-muted">Gestión de Usuarios</div>
                             <h2 class="page-title text-dark">
                                 <c:choose>
                                     <c:when test="${esEdicion}">Editar Usuario: <c:out value="${usuarioEditar.nombreUsuario}"/></c:when>
@@ -134,10 +134,10 @@
 
                             <hr class="my-4">
 
-                            <!-- Sección 2: Datos Personales (Entidad Compartida D2) -->
+                            <!-- Sección 2: Datos Personales -->
                             <h4 class="text-success fw-bold mb-3 d-flex align-items-center gap-2">
                                 <span class="badge bg-success-subtle text-success">2</span>
-                                Datos Personales (Persona Compartida)
+                                Datos Personales
                             </h4>
                             <div class="row g-3 mb-4">
                                 <div class="col-md-4">
@@ -245,17 +245,9 @@
                 </div>
             </div>
 
-            <!-- Footer con atribución de licencia Tabler UI (AGENTS.md §9) -->
             <footer class="footer footer-transparent d-print-none py-3 mt-auto border-top">
-                <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-lg-auto ms-lg-auto">
-                            <span class="text-muted small">Plantilla base: <strong>Tabler UI</strong> (Licencia MIT, basada en Bootstrap 5)</span>
-                        </div>
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <span class="text-muted small">&copy; 2026 Gestiona Commerce &mdash; Sistema de Gestión Comercial (POO II)</span>
-                        </div>
-                    </div>
+                <div class="container-xl text-center text-muted small">
+                    &copy; 2026 Gestiona Commerce
                 </div>
             </footer>
         </div>

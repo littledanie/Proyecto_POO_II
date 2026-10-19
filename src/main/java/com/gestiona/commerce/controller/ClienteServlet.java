@@ -62,7 +62,7 @@ public class ClienteServlet extends HttpServlet {
                 try {
                     int id = Integer.parseInt(request.getParameter("id"));
                     clienteService.eliminarLogico(id);
-                    request.getSession().setAttribute("exitoMensaje", "Cliente desactivado (Inactivo).");
+                    request.getSession().setAttribute("exitoMensaje", "Cliente desactivado correctamente.");
                 } catch (NumberFormatException ignored) {}
                 response.sendRedirect(request.getContextPath() + "/clientes");
                 break;

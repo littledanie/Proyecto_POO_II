@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Clientes — Gestiona Commerce</title>
+    <title>Clientes | Gestiona Commerce</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Tabler UI (Licencia MIT, Bootstrap 5) -->
+    <!-- Tabler UI (Bootstrap 5) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css">
 
     <style>
@@ -65,26 +65,34 @@
                                 <span class="nav-link-title">Inicio</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/usuarios">
-                                <span class="nav-link-title">Usuarios</span>
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active fw-bold text-success" href="${pageContext.request.contextPath}/clientes">
-                                <span class="nav-link-title">Clientes</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/proveedores">
-                                <span class="nav-link-title">Proveedores</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/productos">
-                                <span class="nav-link-title">Productos</span>
-                            </a>
-                        </li>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_USUARIOS')}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/usuarios">
+                                    <span class="nav-link-title">Usuarios</span>
+                                </a>
+                            </li>
+                        </c:if>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('VER_CLIENTES') || sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_CLIENTES')}">
+                            <li class="nav-item active">
+                                <a class="nav-link active fw-bold text-success" href="${pageContext.request.contextPath}/clientes">
+                                    <span class="nav-link-title">Clientes</span>
+                                </a>
+                            </li>
+                        </c:if>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('VER_PROVEEDORES') || sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_PROVEEDORES')}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/proveedores">
+                                    <span class="nav-link-title">Proveedores</span>
+                                </a>
+                            </li>
+                        </c:if>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('VER_PRODUCTOS') || sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_PRODUCTOS')}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/productos">
+                                    <span class="nav-link-title">Productos</span>
+                                </a>
+                            </li>
+                        </c:if>
                     </ul>
                 </div>
             </div>
@@ -95,15 +103,17 @@
                 <div class="container-xl">
                     <div class="row g-2 align-items-center">
                         <div class="col">
-                            <div class="page-pretitle text-muted">Módulo 4.0 &bull; Etapa 5 (Patrón Repository)</div>
+                            <div class="page-pretitle text-muted">Área Comercial</div>
                             <h2 class="page-title text-dark">Gestión de Clientes</h2>
                         </div>
-                        <div class="col-auto ms-auto d-print-none">
-                            <a href="${pageContext.request.contextPath}/clientes?accion=nuevo" class="btn btn-success d-inline-flex align-items-center gap-1">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                Nuevo Cliente
-                            </a>
-                        </div>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_CLIENTES')}">
+                            <div class="col-auto ms-auto d-print-none">
+                                <a href="${pageContext.request.contextPath}/clientes?accion=nuevo" class="btn btn-success d-inline-flex align-items-center gap-1">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                    Nuevo Cliente
+                                </a>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
             </div>
@@ -200,12 +210,9 @@
 
             <footer class="footer footer-transparent d-print-none py-3 mt-auto border-top">
                 <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-lg-auto ms-lg-auto">
-                            <span class="text-muted small">Plantilla base: <strong>Tabler UI</strong> (Licencia MIT, basada en Bootstrap 5)</span>
-                        </div>
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <span class="text-muted small">&copy; 2026 Gestiona Commerce &mdash; Sistema de Gestión Comercial (POO II)</span>
+                    <div class="row text-center align-items-center">
+                        <div class="col-12 text-center">
+                            <span class="text-muted small">&copy; 2026 Gestiona Commerce &mdash; Sistema de Gestión Comercial</span>
                         </div>
                     </div>
                 </div>

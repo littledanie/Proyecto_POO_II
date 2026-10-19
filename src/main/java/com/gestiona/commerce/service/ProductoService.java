@@ -24,6 +24,10 @@ public class ProductoService {
         return productoRepository.listarTodos();
     }
 
+    public List<Producto> listarStockCritico() {
+        return productoRepository.listarStockCritico();
+    }
+
     public Producto buscarPorId(int id) {
         return productoRepository.buscarPorId(id);
     }

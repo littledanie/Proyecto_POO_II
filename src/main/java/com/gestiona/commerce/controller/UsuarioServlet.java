@@ -77,7 +77,7 @@ public class UsuarioServlet extends HttpServlet {
                 try {
                     int id = Integer.parseInt(request.getParameter("id"));
                     usuarioService.eliminarLogico(id);
-                    request.getSession().setAttribute("exitoMensaje", "Usuario desactivado lógicamente (estado Inactivo).");
+                    request.getSession().setAttribute("exitoMensaje", "Usuario desactivado correctamente.");
                 } catch (NumberFormatException ignored) {}
                 response.sendRedirect(request.getContextPath() + "/usuarios");
                 break;
@@ -86,6 +86,12 @@ public class UsuarioServlet extends HttpServlet {
             default:
                 List<Usuario> lista = usuarioService.listarTodos();
                 request.setAttribute("usuarios", lista);
+                long totalActivos = lista.stream().filter(u -> "Activo".equalsIgnoreCase(u.getEstado())).count();
+                long totalBloqueadas = lista.stream().filter(Usuario::isBloqueado).count();
+                int totalRoles = usuarioService.listarRoles().size();
+                request.setAttribute("totalActivos", totalActivos);
+                request.setAttribute("totalBloqueadas", totalBloqueadas);
+                request.setAttribute("totalRoles", totalRoles);
                 request.getRequestDispatcher("/WEB-INF/views/dashboard/usuarios-lista.jsp").forward(request, response);
                 break;
         }
@@ -181,9 +187,9 @@ public class UsuarioServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("[UsuarioServlet] Error al procesar formulario de usuario: " + e.getMessage());
             cargarCatalogos(request);
-            request.setAttribute("errorMensaje", "Error al procesar el formulario: " + e.getMessage());
+            request.setAttribute("errorMensaje", "Error al procesar la solicitud. Por favor verifique los datos ingresados.");
             request.setAttribute("esEdicion", !esNuevo);
             request.getRequestDispatcher("/WEB-INF/views/dashboard/usuarios-form.jsp").forward(request, response);
         }

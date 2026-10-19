@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios — Gestiona Commerce</title>
+    <title>Usuarios | Gestiona Commerce</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -75,26 +75,34 @@
                                 <span class="nav-link-title">Inicio</span>
                             </a>
                         </li>
-                        <li class="nav-item active">
-                            <a class="nav-link active fw-bold text-success" href="${pageContext.request.contextPath}/usuarios">
-                                <span class="nav-link-title">Usuarios</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/clientes">
-                                <span class="nav-link-title">Clientes</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/proveedores">
-                                <span class="nav-link-title">Proveedores</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="${pageContext.request.contextPath}/productos">
-                                <span class="nav-link-title">Productos</span>
-                            </a>
-                        </li>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_USUARIOS')}">
+                            <li class="nav-item active">
+                                <a class="nav-link active fw-bold text-success" href="${pageContext.request.contextPath}/usuarios">
+                                    <span class="nav-link-title">Usuarios</span>
+                                </a>
+                            </li>
+                        </c:if>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('VER_CLIENTES') or sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_CLIENTES')}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/clientes">
+                                    <span class="nav-link-title">Clientes</span>
+                                </a>
+                            </li>
+                        </c:if>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('VER_PROVEEDORES') or sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_PROVEEDORES')}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/proveedores">
+                                    <span class="nav-link-title">Proveedores</span>
+                                </a>
+                            </li>
+                        </c:if>
+                        <c:if test="${sessionScope.usuarioLogueado.tienePermiso('VER_PRODUCTOS') or sessionScope.usuarioLogueado.tienePermiso('GESTIONAR_PRODUCTOS')}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="${pageContext.request.contextPath}/productos">
+                                    <span class="nav-link-title">Productos</span>
+                                </a>
+                            </li>
+                        </c:if>
                     </ul>
                 </div>
             </div>
@@ -106,7 +114,7 @@
                 <div class="container-xl">
                     <div class="row g-2 align-items-center">
                         <div class="col">
-                            <div class="page-pretitle text-muted">Módulo 3.0 &bull; Etapa 4 (Patrón Repository)</div>
+                            <div class="page-pretitle text-muted">Administración</div>
                             <h2 class="page-title text-dark">Gestión de Cuentas y Datos Personales</h2>
                         </div>
                         <div class="col-auto ms-auto d-print-none">
@@ -172,8 +180,8 @@
                                             </span>
                                         </div>
                                         <div class="col">
-                                            <div class="font-weight-medium">Patrón Aplicado</div>
-                                            <div class="text-muted small">Repository + Singleton</div>
+                                            <div class="font-weight-medium">Usuarios Activos</div>
+                                            <div class="text-muted small">${totalActivos} habilitados</div>
                                         </div>
                                     </div>
                                 </div>
@@ -185,13 +193,13 @@
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
-                                            <span class="bg-warning text-white avatar">
+                                            <span class="${totalBloqueadas > 0 ? 'bg-danger text-white' : 'bg-secondary text-white'} avatar">
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                                             </span>
                                         </div>
                                         <div class="col">
-                                            <div class="font-weight-medium">Seguridad Activa</div>
-                                            <div class="text-muted small">BCrypt + 3 intentos</div>
+                                            <div class="font-weight-medium">Cuentas Bloqueadas</div>
+                                            <div class="${totalBloqueadas > 0 ? 'text-danger fw-bold' : 'text-muted'} small">${totalBloqueadas} bloqueadas</div>
                                         </div>
                                     </div>
                                 </div>
@@ -203,13 +211,13 @@
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
-                                            <span class="bg-info text-white avatar">
+                                            <span class="bg-teal text-white avatar">
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
                                             </span>
                                         </div>
                                         <div class="col">
-                                            <div class="font-weight-medium">Base de Datos</div>
-                                            <div class="text-muted small">PostgreSQL 3FN</div>
+                                            <div class="font-weight-medium">Roles del Sistema</div>
+                                            <div class="text-muted small">${totalRoles} perfiles</div>
                                         </div>
                                     </div>
                                 </div>
@@ -307,8 +315,7 @@
                                                     <c:if test="${u.estado == 'Activo'}">
                                                         <a href="${pageContext.request.contextPath}/usuarios?accion=eliminar&id=${u.idUsuario}" 
                                                            class="btn btn-sm btn-outline-danger" 
-                                                           onclick="return confirm('¿Seguro que deseas desactivar lógicamente a este usuario?');"
-                                                           title="Eliminación lógica">
+                                                           onclick="return confirm('¿Está seguro de que desea desactivar este usuario?');">
                                                             Desactivar
                                                         </a>
                                                     </c:if>
@@ -324,17 +331,9 @@
                 </div>
             </div>
 
-            <!-- Footer con atribución de licencia Tabler UI (AGENTS.md §9) -->
             <footer class="footer footer-transparent d-print-none py-3 mt-auto border-top">
-                <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-lg-auto ms-lg-auto">
-                            <span class="text-muted small">Plantilla base: <strong>Tabler UI</strong> (Licencia MIT, basada en Bootstrap 5)</span>
-                        </div>
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <span class="text-muted small">&copy; 2026 Gestiona Commerce &mdash; Sistema de Gestión Comercial (POO II)</span>
-                        </div>
-                    </div>
+                <div class="container-xl text-center text-muted small">
+                    &copy; 2026 Gestiona Commerce
                 </div>
             </footer>
         </div>

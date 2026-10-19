@@ -44,6 +44,37 @@ public class ProductoRepositoryImpl implements ProductoRepository {
     }
 
     @Override
+    public List<Producto> listarStockCritico() {
+        List<Producto> lista = new ArrayList<>();
+        String sql = "SELECT p.id_producto, p.codigo, p.nombre, p.descripcion, p.tipo, " +
+                     "       p.id_categoria, cat.nombre_categoria, " +
+                     "       p.id_marca, m.nombre_marca, " +
+                     "       p.id_unidad_medida, um.nombre AS um_nombre, um.abreviatura AS um_abrev, " +
+                     "       p.precio_compra, p.precio_venta, p.stock_actual, p.stock_minimo, p.estado " +
+                     "FROM producto p " +
+                     "JOIN categoria cat ON p.id_categoria = cat.id_categoria " +
+                     "LEFT JOIN marca m ON p.id_marca = m.id_marca " +
+                     "JOIN unidad_medida um ON p.id_unidad_medida = um.id_unidad_medida " +
+                     "WHERE p.estado = 'Activo' " +
+                     "  AND p.tipo <> 'SERVICIO' " +
+                     "  AND p.stock_minimo > 0 " +
+                     "  AND p.stock_actual <= p.stock_minimo " +
+                     "ORDER BY (p.stock_actual - p.stock_minimo) ASC, p.nombre ASC";
+
+        try (Connection con = getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(mapearProducto(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    @Override
     public Producto buscarPorId(int id) {
         String sql = "SELECT p.id_producto, p.codigo, p.nombre, p.descripcion, p.tipo, " +
                      "       p.id_categoria, cat.nombre_categoria, " +

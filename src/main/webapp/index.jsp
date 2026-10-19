@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Gestiona Commerce — Sistema web de gestión comercial. Inicia sesión para acceder al panel de administración.">
-    <title>Iniciar Sesión — Gestiona Commerce</title>
+    <title>Iniciar Sesión | Gestiona Commerce</title>
 
     <!-- Tipografía: Inter de Google Fonts (profesional, limpia, ideal para sistemas de gestión) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,7 +85,7 @@
 
                 <c:if test="${bloqueado}">
                     <div class="alert alert-error" style="background-color: #fee2e2; border-color: #f87171; color: #991b1b; margin-bottom: 1.25rem;">
-                        <strong>Cuenta Bloqueada:</strong> Se han agotado los 3 intentos permitidos. Por seguridad, la sesión y el formulario han sido deshabilitados.
+                        <strong>Acceso denegado:</strong> Cuenta bloqueada. Contacte al administrador del sistema.
                     </div>
                 </c:if>
 
@@ -105,7 +105,7 @@
                                    id="usuario"
                                    name="usuario"
                                    class="form-input"
-                                   placeholder="Ej. lfernandez"
+                                   placeholder="Ingresa tu usuario"
                                    autocomplete="username"
                                    required
                                    autofocus
@@ -174,7 +174,7 @@
                 </form>
 
                 <footer class="login-footer">
-                    <p>&copy; 2026 Gestiona Commerce &mdash; Proyecto POO II</p>
+                    <p>&copy; 2026 Gestiona Commerce</p>
                 </footer>
             </div>
         </main>

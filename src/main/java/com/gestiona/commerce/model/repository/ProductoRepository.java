@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface ProductoRepository {
     List<Producto> listarTodos();
+    List<Producto> listarStockCritico();
     Producto buscarPorId(int id);
     boolean registrar(Producto producto);
     boolean actualizar(Producto producto);

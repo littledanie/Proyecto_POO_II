@@ -9,7 +9,7 @@
 - **Estudiante:** Daniela
 - **Curso:** Programación Orientada a Objetos II (POO II)
 - **Alcance actual:** Avance 1 (Etapas 1 a 5 de `Etapas.md`, Pasos 1 al 12) — **COMPLETADO AL 100%**
-- **Fase actual:** Etapa 5 completada — CRUD de Clientes, Proveedores y Productos/Mercaderías implementado con el patrón **Repository**, arquitectura MVC en capas, persistencia JDBC pura en PostgreSQL/Supabase, eliminación lógica y vistas dashboard con **Tabler UI (MIT / Bootstrap 5)**. Análisis en bloques completado en `docs/analisis/` y evidencias en `docs/evidencias/`.
+- **Fase actual:** Limpieza final de interfaz completada — Producto comercial "Gestiona Commerce" orientado a usuario final, sin rastros académicos ni técnicos. Navegación y KPI basados en permisos, dashboard con stock crítico real, métricas limpias, títulos dinámicos, manejo seguro de errores (404/500 sin trazas), licencias en `docs/LICENSE-THIRD-PARTY.md` y tags `pre-limpieza` y `avance-1-final`.
 - **Servidor / Runtime:** Java 17 (`--release 17`) + Apache Tomcat 10.1 (`jakarta.*`) + Maven WAR
 - **Base de Datos:** PostgreSQL en Supabase (JDBC puro 42.7.2 con Singleton y Repository)
 - **Hosting:** Render (Web Service con Docker multi-stage, plan Free) — auto-deploy conectado a GitHub
@@ -43,6 +43,17 @@
 - [x] **Paso 11:** CRUD con Repository para Clientes, Proveedores y Mercadería/Productos/Insumos/Servicios (`database/etapa-5.sql`, entidades POJO, repositorios con JDBC puro y transacciones, servicios con validaciones de negocio y vistas Tabler UI).
 - [x] **Paso 12:** Análisis en bloques del patrón Repository para entidades comerciales (`docs/analisis/repository-clientes-proveedores-productos.md`) y guía de evidencias `docs/evidencias/etapa-5.md`.
 
+### Hito Especial — Limpieza comercial y preparación para entrega
+- [x] **Tag pre-limpieza:** Creado antes de iniciar las modificaciones de limpieza visual.
+- [x] **Permisos en navegación y dashboard:** Menú de opciones y accesos rápidos condicionados estrictamente por los permisos del usuario (`GESTIONAR_USUARIOS`, `VER_CLIENTES`, `VER_PROVEEDORES`, `VER_PRODUCTOS`), no por el nombre del rol.
+- [x] **Dashboard con datos reales:** Tarjetas KPI con conteos reales obtenidos de BD y tabla de "Alerta de Stock Crítico" (`Activo`, `tipo <> 'SERVICIO'`, `stock_minimo > 0` y `stock_actual <= stock_minimo`) visible solo con permiso `VER_PRODUCTOS`. Se removieron indicadores sin sustento real.
+- [x] **Métricas en Usuarios:** Conteo en memoria de activos, cuentas bloqueadas y roles distintos en `UsuarioServlet`.
+- [x] **Títulos dinámicos de formularios:** `<title>` adaptativo ("Nuevo/Editar usuario/cliente/proveedor/producto | Gestiona Commerce").
+- [x] **Seguridad en Login:** Mensaje de bloqueo unificado `"Cuenta bloqueada. Contacte al administrador del sistema."` y eliminación de credenciales de prueba o textos técnicos en `index.jsp`.
+- [x] **Licencias de terceros:** Atribución visible retirada de los pies de página; creado `docs/LICENSE-THIRD-PARTY.md` documentando Tabler UI, Bootstrap 5 y la fuente Inter bajo sus licencias originales.
+- [x] **Páginas de error personalizadas y seguridad de trazas:** Creadas `src/main/webapp/WEB-INF/views/error/404.jsp` y `500.jsp`, registradas en `web.xml`. Cero fugas de excepciones o trazas técnicas (`getMessage()`, `printStackTrace()`) hacia la pantalla de usuario.
+- [x] **Tag final de entrega:** `avance-1-final`.
+
 ---
 
 ## 3. Decisiones tomadas
@@ -73,6 +84,8 @@
 | DEC-23 | Reutilización de `datos_personales` para `cliente` y `proveedor`. | Coherencia del modelo relacional 3FN; los repositorios insertan persona + contacto + entidad comercial en una transacción atómica. |
 | DEC-24 | Manejo de valores monetarios con `BigDecimal` y catálogo con `LEFT JOIN`. | Evita errores de redondeo en precios de compra/venta y soporta productos sin marca asignada. |
 | DEC-25 | Enlace unificado entre todos los módulos en la barra superior. | Experiencia de usuario completa y sin enlaces rotos entre Usuarios, Clientes, Proveedores y Productos. |
+| DEC-26 | Navegación y KPI basados en `Usuario.tienePermiso(String)`. | Desacopla las vistas del nombre de los roles, respetando el control de acceso granular canónico. |
+| DEC-27 | Ocultamiento total de detalles de desarrollo en vistas públicas. | Garantiza aspecto de aplicación de producción para usuario final. |
 
 ---
 
@@ -83,30 +96,18 @@
 | `Etapas.md` | Guía de etapas 1 a 5 y checklist de entrega. |
 | `13_2_Modulos_basicos_Formas_Normales.md` | Esquema de BD canónico, datos de prueba y arquitectura de clases. |
 | `PROGRESO.md` | Estado actual y registro de traspaso entre modelos. |
+| `docs/LICENSE-THIRD-PARTY.md` | Licencias de librerías de terceros (Tabler UI, Bootstrap 5, Inter font). |
 | `pom.xml` | Proyecto Maven WAR (Java 17, Jakarta Servlet 6.0, JSTL 3.0, PostgreSQL JDBC 42.7.2, BCrypt 0.4). |
 | `Dockerfile` | Build multi-stage: Maven compila → Tomcat 10.1 sirve el WAR. |
-| `database/etapa-2.sql` | DDL provisional Etapa 2 (texto plano para evidenciar evolución pedagógica). |
-| `database/etapa-3.sql` | DDL 3FN (`rol`, `permiso`, `rol_permiso`, `usuario`) con hashes BCrypt y bloqueo. |
-| `database/etapa-4.sql` | DDL personas, contacto, ubicación y vinculación a `usuario` (`id_datos_personales`). |
-| `database/etapa-5.sql` | DDL catálogos (`categoria`, `marca`, `unidad_medida`), `producto`, `cliente`, `proveedor` y datos canónicos. |
+| `src/main/webapp/WEB-INF/web.xml` | Configuración de servlets y mapeo de errores 404 y 500. |
+| `src/main/webapp/WEB-INF/views/error/*.jsp` | Páginas de error 404 y 500 con diseño sobrio y sin detalles del servidor. |
 | `src/main/java/com/gestiona/commerce/config/ConexionBD.java` | Patrón creacional **Singleton** para conexión JDBC a Supabase. |
 | `src/main/java/com/gestiona/commerce/util/PasswordUtil.java` | Utilidad de hashing y verificación con BCrypt (rounds=12). |
-| `src/main/java/com/gestiona/commerce/util/SeedUsuarios.java` | Generador canónico de hashes para inserción en BD. |
-| `src/main/java/com/gestiona/commerce/model/entity/*.java` | Entidades POJO del dominio (`Usuario`, `DatosPersonales`, `Rol`, `Cliente`, `Proveedor`, `Producto`, etc.). |
-| `src/main/java/com/gestiona/commerce/model/repository/UsuarioRepository.java` | Interfaz del patrón **Repository** para Usuario. |
-| `src/main/java/com/gestiona/commerce/model/repository/UsuarioRepositoryImpl.java` | Implementación JDBC pura de Repository para Usuario. |
-| `src/main/java/com/gestiona/commerce/model/repository/ClienteRepository.java` | Interfaz de Repository para Cliente. |
-| `src/main/java/com/gestiona/commerce/model/repository/ClienteRepositoryImpl.java` | Implementación JDBC pura con transacciones atómicas para Cliente. |
-| `src/main/java/com/gestiona/commerce/model/repository/ProveedorRepository.java` | Interfaz de Repository para Proveedor. |
-| `src/main/java/com/gestiona/commerce/model/repository/ProveedorRepositoryImpl.java` | Implementación JDBC pura con transacciones atómicas para Proveedor. |
-| `src/main/java/com/gestiona/commerce/model/repository/ProductoRepository.java` | Interfaz de Repository para Producto. |
-| `src/main/java/com/gestiona/commerce/model/repository/ProductoRepositoryImpl.java` | Implementación JDBC pura con mapeo relacional multi-tabla para Producto. |
-| `src/main/java/com/gestiona/commerce/service/UsuarioService.java` | Servicio de negocio para CRUD de usuarios y validaciones. |
-| `src/main/java/com/gestiona/commerce/service/ClienteService.java` | Servicio de negocio para CRUD de clientes y validaciones DNI/RUC. |
-| `src/main/java/com/gestiona/commerce/service/ProveedorService.java` | Servicio de negocio para CRUD de proveedores y validaciones RUC. |
-| `src/main/java/com/gestiona/commerce/service/ProductoService.java` | Servicio de negocio para CRUD de productos, categorías y unidades. |
-| `src/main/java/com/gestiona/commerce/controller/*.java` | Controladores Servlets (`LoginServlet`, `BienvenidaServlet`, `UsuarioServlet`, `ClienteServlet`, `ProveedorServlet`, `ProductoServlet`). |
-| `src/main/webapp/WEB-INF/views/dashboard/*.jsp` | Vistas de listado y formularios con plantilla Tabler UI / Bootstrap 5. |
+| `src/main/java/com/gestiona/commerce/model/entity/*.java` | Entidades POJO (`Usuario`, `DatosPersonales`, `Rol`, `Cliente`, `Proveedor`, `Producto`, etc.). |
+| `src/main/java/com/gestiona/commerce/model/repository/*.java` | Interfaces e implementaciones JDBC del patrón **Repository**. |
+| `src/main/java/com/gestiona/commerce/service/*.java` | Servicios de negocio (`LoginService`, `UsuarioService`, `ClienteService`, `ProveedorService`, `ProductoService`). |
+| `src/main/java/com/gestiona/commerce/controller/*.java` | Servlets MVC (`LoginServlet`, `BienvenidaServlet`, `UsuarioServlet`, `ClienteServlet`, `ProveedorServlet`, `ProductoServlet`). |
+| `src/main/webapp/WEB-INF/views/dashboard/*.jsp` | Vistas de listado y formularios adaptadas con permisos y diseño comercial Tabler UI. |
 | `docs/analisis/singleton.md` | Análisis en bloques del patrón Singleton (Paso 7). |
 | `docs/analisis/repository-usuarios.md` | Análisis en bloques del patrón Repository usuarios (Paso 10). |
 | `docs/analisis/repository-clientes-proveedores-productos.md` | Análisis en bloques del patrón Repository para entidades comerciales (Paso 12). |
@@ -117,8 +118,7 @@
 ## 5. Cómo ejecutar el proyecto
 
 ### Supabase (Base de Datos)
-1. Ejecutar `database/etapa-4.sql` si aún no se había corrido.
-2. Ejecutar `database/etapa-5.sql` en el SQL Editor de Supabase para crear las tablas de `categoria`, `marca`, `unidad_medida`, `producto`, `cliente` y `proveedor`, cargando los datos canónicos obligatorios.
+1. Los scripts `database/etapa-3.sql`, `etapa-4.sql` y `etapa-5.sql` deben estar ejecutados en el SQL Editor de Supabase.
 
 ### Local (NetBeans + Tomcat)
 1. Abrir el proyecto en Apache NetBeans como proyecto Maven.
@@ -130,15 +130,15 @@
 
 ---
 
-## 6. Pendientes y bloqueos actuales
-- **Acción requerida de la estudiante en Supabase:**
-  Ejecutar el script `database/etapa-5.sql` en el SQL Editor de Supabase (y `database/etapa-4.sql` si faltaba).
-- **Acción requerida de evidencias para entrega académica:**
-  Tomar las capturas indicadas en `docs/evidencias/etapa-4.md` y `docs/evidencias/etapa-5.md` para armar el documento de entrega del **Avance 1**.
+## 6. Pendientes y decisiones abiertas
+- **Hallazgo de Seguridad (Instrucción 3 de limpieza):**
+  Actualmente los Servlets (`UsuarioServlet`, `ClienteServlet`, `ProveedorServlet`, `ProductoServlet`) validan únicamente que exista una sesión activa (`session.getAttribute("usuarioLogueado") != null`), pero **no validan si el usuario posee el permiso correspondiente si ingresa la URL directamente en el navegador**. Tampoco existe un `Filter` de autorización registrado.
+  *Estado:* Reportado a la estudiante según lo solicitado, a la espera de su confirmación para proceder con la implementación de un filtro o validación por servlet.
 
 ---
 
 ## 7. Próximo paso exacto
-- **¡Avance 1 Completado con Éxito!**
-- El alcance acordado en `AGENTS.md` (Etapas 1 a 5, Pasos 1 al 12) ha finalizado satisfactoriamente.
-- No construir ventas ni reportes (Etapa 6 en adelante) hasta que el docente evalúe el Avance 1 y la estudiante lo indique expresamente.
+- **¡Avance 1 Completado y Limpio!**
+- Realizar `git push origin main --tags` hacia GitHub para activar el redespliegue final en Render.
+- Tomar las capturas de pantalla de la interfaz comercial para la carpeta de evidencias y memoria del informe.
+- No avanzar a ventas, facturación ni reportes (Etapa 6 en adelante) hasta que el docente evalúe el Avance 1.

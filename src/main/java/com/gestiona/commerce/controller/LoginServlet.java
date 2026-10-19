@@ -77,7 +77,7 @@ public class LoginServlet extends HttpServlet {
             System.err.println("[LoginServlet] Error al procesar autenticación: " + e.getMessage());
             e.printStackTrace();
 
-            request.setAttribute("error", "No se pudo conectar con la base de datos. Verifique la conexión o intente más tarde.");
+            request.setAttribute("error", "El servicio no está disponible en este momento. Por favor intente más tarde.");
             request.getRequestDispatcher("/index.jsp").forward(request, response);
         }
     }

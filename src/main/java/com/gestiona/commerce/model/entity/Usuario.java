@@ -81,6 +81,14 @@ public class Usuario implements Serializable {
         this.rol = rol;
     }
 
+    public java.util.Set<String> getPermisos() {
+        return rol != null ? rol.getPermisos() : java.util.Collections.emptySet();
+    }
+
+    public boolean tienePermiso(String nombrePermiso) {
+        return rol != null && rol.tienePermiso(nombrePermiso);
+    }
+
     public Integer getIdDatosPersonales() {
         return idDatosPersonales;
     }

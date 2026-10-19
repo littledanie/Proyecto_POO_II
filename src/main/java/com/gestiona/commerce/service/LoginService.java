@@ -70,12 +70,13 @@ public class LoginService {
                 rol.setIdRol(rs.getInt("id_rol"));
                 rol.setNombreRol(rs.getString("nombre_rol"));
                 rol.setDescripcion(rs.getString("rol_descripcion"));
+                rol.setPermisos(cargarPermisosDeRol(con, rs.getInt("id_rol")));
                 usuario.setRol(rol);
 
                 // 1. Verificación previa de bloqueo: si ya está bloqueado, no permitir acceso
                 if (usuario.isBloqueado()) {
                     return ResultadoLogin.cuentaBloqueada(
-                        "Tu cuenta se encuentra bloqueada por superar el límite de 3 intentos erróneos. Contacta al administrador."
+                        "Cuenta bloqueada. Contacte al administrador del sistema."
                     );
                 }
 
@@ -96,7 +97,7 @@ public class LoginService {
 
                     if (debeBloquear) {
                         return ResultadoLogin.cuentaBloqueada(
-                            "Has superado el límite de 3 intentos fallidos. Tu cuenta ha sido bloqueada automáticamente por seguridad."
+                            "Cuenta bloqueada. Contacte al administrador del sistema."
                         );
                     } else {
                         int intentosRestantes = LIMITE_INTENTOS - nuevosIntentos;
@@ -129,5 +130,23 @@ public class LoginService {
             ps.setInt(3, idUsuario);
             ps.executeUpdate();
         }
+    }
+
+    private java.util.Set<String> cargarPermisosDeRol(Connection con, int idRol) {
+        java.util.Set<String> permisos = new java.util.HashSet<>();
+        String sql = "SELECT p.nombre_permiso FROM permiso p " +
+                     "JOIN rol_permiso rp ON p.id_permiso = rp.id_permiso " +
+                     "WHERE rp.id_rol = ? AND p.estado = 'Activo'";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idRol);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    permisos.add(rs.getString("nombre_permiso"));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[LoginService] Error al cargar permisos: " + e.getMessage());
+        }
+        return permisos;
     }
 }

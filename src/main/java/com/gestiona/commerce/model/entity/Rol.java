@@ -15,6 +15,7 @@ public class Rol implements Serializable {
     private String nombreRol;
     private String descripcion;
     private String estado;
+    private java.util.Set<String> permisos = new java.util.HashSet<>();
 
     public Rol() {
     }
@@ -24,6 +25,18 @@ public class Rol implements Serializable {
         this.nombreRol = nombreRol;
         this.descripcion = descripcion;
         this.estado = "Activo";
+    }
+
+    public java.util.Set<String> getPermisos() {
+        return permisos != null ? permisos : java.util.Collections.emptySet();
+    }
+
+    public void setPermisos(java.util.Set<String> permisos) {
+        this.permisos = permisos != null ? permisos : new java.util.HashSet<>();
+    }
+
+    public boolean tienePermiso(String nombrePermiso) {
+        return permisos != null && permisos.contains(nombrePermiso);
     }
 
     public Integer getIdRol() {
