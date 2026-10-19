@@ -1,0 +1,31 @@
+# Archivo de variables de entorno y secretos
+.env
+*.env
+!.env.example
+
+# Compilación Maven y artefactos
+target/
+*.war
+*.jar
+*.class
+
+# IDEs (NetBeans, VSCode, Eclipse, IntelliJ)
+nbproject/private/
+nbbuild/
+dist/
+.idea/
+*.iml
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+
+# Obsidian (caché y estado de workspace personal)
+.obsidian/workspace*
+.obsidian/cache/
+
+# Sistema operativo
+Thumbs.db
+Desktop.ini
+.DS_Store
