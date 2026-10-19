@@ -1,14 +1,14 @@
 package com.gestiona.commerce.model.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
- * Entidad que representa a un usuario del sistema Gestiona Commerce.
+ * Entidad que representa a un Usuario en el sistema Gestiona Commerce.
  * 
- * NOTA DE ARQUITECTURA (Etapa 2):
- * En esta etapa inicial, el modelo refleja la tabla provisional 'usuarios'
- * con contraseña en texto plano. En la Etapa 3 evolucionará para incorporar
- * rol, control de intentos fallidos, estado de bloqueo y hash BCrypt.
+ * Esquema 3FN (Etapa 3):
+ * usuario(id_usuario, nombre_usuario, contrasena_hash, id_rol, ultimo_acceso,
+ *         intentos_fallidos, bloqueado, token_recuperacion, +AUD)
  */
 public class Usuario implements Serializable {
 
@@ -16,23 +16,25 @@ public class Usuario implements Serializable {
 
     private Integer idUsuario;
     private String nombreUsuario;
-    private String contrasena;
+    private String contrasenaHash;
+    private Integer idRol;
+    private Rol rol; // Objeto de relación con Rol
+    private Timestamp ultimoAcceso;
+    private int intentosFallidos;
+    private boolean bloqueado;
+    private String estado;
 
-    // Constructor por defecto
     public Usuario() {
     }
 
-    // Constructor con campos principales
-    public Usuario(Integer idUsuario, String nombreUsuario, String contrasena) {
+    public Usuario(Integer idUsuario, String nombreUsuario, String contrasenaHash, Integer idRol) {
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
-        this.contrasena = contrasena;
-    }
-
-    // Constructor para registro/consulta sin ID
-    public Usuario(String nombreUsuario, String contrasena) {
-        this.nombreUsuario = nombreUsuario;
-        this.contrasena = contrasena;
+        this.contrasenaHash = contrasenaHash;
+        this.idRol = idRol;
+        this.intentosFallidos = 0;
+        this.bloqueado = false;
+        this.estado = "Activo";
     }
 
     // --- Getters y Setters ---
@@ -53,12 +55,60 @@ public class Usuario implements Serializable {
         this.nombreUsuario = nombreUsuario;
     }
 
-    public String getContrasena() {
-        return contrasena;
+    public String getContrasenaHash() {
+        return contrasenaHash;
     }
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+    public void setContrasenaHash(String contrasenaHash) {
+        this.contrasenaHash = contrasenaHash;
+    }
+
+    public Integer getIdRol() {
+        return idRol;
+    }
+
+    public void setIdRol(Integer idRol) {
+        this.idRol = idRol;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public Timestamp getUltimoAcceso() {
+        return ultimoAcceso;
+    }
+
+    public void setUltimoAcceso(Timestamp ultimoAcceso) {
+        this.ultimoAcceso = ultimoAcceso;
+    }
+
+    public int getIntentosFallidos() {
+        return intentosFallidos;
+    }
+
+    public void setIntentosFallidos(int intentosFallidos) {
+        this.intentosFallidos = intentosFallidos;
+    }
+
+    public boolean isBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(boolean bloqueado) {
+        this.bloqueado = bloqueado;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     @Override
@@ -66,6 +116,8 @@ public class Usuario implements Serializable {
         return "Usuario{" +
                 "idUsuario=" + idUsuario +
                 ", nombreUsuario='" + nombreUsuario + '\'' +
+                ", idRol=" + idRol +
+                ", bloqueado=" + bloqueado +
                 '}';
     }
 }
