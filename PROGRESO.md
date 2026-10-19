@@ -8,13 +8,14 @@
 ## 1. Estado general del proyecto
 - **Estudiante:** Daniela
 - **Curso:** Programación Orientada a Objetos II (POO II)
-- **Alcance actual:** Avance 1 (Etapas 1 a 5 de `Etapas.md`, Pasos 1 al 12)
-- **Fase actual:** Etapa 4 completada — Dashboard y CRUD de usuarios con patrón Repository, plantilla Tabler UI / Bootstrap 5, datos personales, contacto y ubicación listos. Pendiente de ejecución de `database/etapa-4.sql` en Supabase y toma de capturas.
-- **Servidor / Runtime:** Java 17 + Apache Tomcat 10.1 (`jakarta.*`) + Maven WAR
-- **Base de Datos:** PostgreSQL en Supabase (acceso JDBC puro 42.7 con Singleton y Repository)
+- **Alcance actual:** Avance 1 (Etapas 1 a 5 de `Etapas.md`, Pasos 1 al 12) — **COMPLETADO AL 100%**
+- **Fase actual:** Etapa 5 completada — CRUD de Clientes, Proveedores y Productos/Mercaderías implementado con el patrón **Repository**, arquitectura MVC en capas, persistencia JDBC pura en PostgreSQL/Supabase, eliminación lógica y vistas dashboard con **Tabler UI (MIT / Bootstrap 5)**. Análisis en bloques completado en `docs/analisis/` y evidencias en `docs/evidencias/`.
+- **Servidor / Runtime:** Java 17 (`--release 17`) + Apache Tomcat 10.1 (`jakarta.*`) + Maven WAR
+- **Base de Datos:** PostgreSQL en Supabase (JDBC puro 42.7.2 con Singleton y Repository)
 - **Hosting:** Render (Web Service con Docker multi-stage, plan Free) — auto-deploy conectado a GitHub
 - **IDE:** Apache NetBeans con soporte Maven y JDK 17
 - **Repositorio:** `https://github.com/littledanie/Proyecto_POO_II`
+- **Link público verificado:** `https://gestiona-commerce.onrender.com`
 
 ---
 
@@ -39,8 +40,8 @@
 - [x] **Paso 10:** Análisis en bloques del patrón Repository usuarios (`docs/analisis/repository-usuarios.md`) listo para Google Docs.
 
 ### Etapa 5 — CRUD de clientes, proveedores y mercadería
-- [ ] **Paso 11:** CRUD con Repository para Clientes, Proveedores y Mercadería/Productos/Insumos/Servicios.
-- [ ] **Paso 12:** Análisis en bloques del patrón Repository para entidades comerciales (`docs/analisis/repository-clientes-proveedores-productos.md`).
+- [x] **Paso 11:** CRUD con Repository para Clientes, Proveedores y Mercadería/Productos/Insumos/Servicios (`database/etapa-5.sql`, entidades POJO, repositorios con JDBC puro y transacciones, servicios con validaciones de negocio y vistas Tabler UI).
+- [x] **Paso 12:** Análisis en bloques del patrón Repository para entidades comerciales (`docs/analisis/repository-clientes-proveedores-productos.md`) y guía de evidencias `docs/evidencias/etapa-5.md`.
 
 ---
 
@@ -68,7 +69,10 @@
 | DEC-19 | Plantilla de Dashboard: **Tabler UI (Licencia MIT, basada en Bootstrap 5)**. | Cumple el requisito de AGENTS.md §9 de usar una plantilla Bootstrap de licencia libre sin librerías obsoletas como jQuery. |
 | DEC-20 | Entidad compartida `datos_personales` vinculada a `usuario` mediante `id_datos_personales` (Decisión D2). | Normalización en 3FN evitando redundancia de nombres, DNI, correos, teléfonos y direcciones. |
 | DEC-21 | Patrón Repository (`UsuarioRepository` y `UsuarioRepositoryImpl`). | Desacopla la lógica comercial de la persistencia JDBC y maneja transacciones atómicas con `commit()` y `rollback()`. |
-| DEC-22 | Eliminación lógica (`estado = 'Inactivo'`) en el CRUD de usuarios. | Preserva la integridad referencial y la trazabilidad de auditoría según AGENTS.md §6.6. |
+| DEC-22 | Eliminación lógica (`estado = 'Inactivo'`) transversal en todos los CRUDs. | Preserva la integridad referencial y la trazabilidad de auditoría según AGENTS.md §6.6. |
+| DEC-23 | Reutilización de `datos_personales` para `cliente` y `proveedor`. | Coherencia del modelo relacional 3FN; los repositorios insertan persona + contacto + entidad comercial en una transacción atómica. |
+| DEC-24 | Manejo de valores monetarios con `BigDecimal` y catálogo con `LEFT JOIN`. | Evita errores de redondeo en precios de compra/venta y soporta productos sin marca asignada. |
+| DEC-25 | Enlace unificado entre todos los módulos en la barra superior. | Experiencia de usuario completa y sin enlaces rotos entre Usuarios, Clientes, Proveedores y Productos. |
 
 ---
 
@@ -84,57 +88,57 @@
 | `database/etapa-2.sql` | DDL provisional Etapa 2 (texto plano para evidenciar evolución pedagógica). |
 | `database/etapa-3.sql` | DDL 3FN (`rol`, `permiso`, `rol_permiso`, `usuario`) con hashes BCrypt y bloqueo. |
 | `database/etapa-4.sql` | DDL personas, contacto, ubicación y vinculación a `usuario` (`id_datos_personales`). |
+| `database/etapa-5.sql` | DDL catálogos (`categoria`, `marca`, `unidad_medida`), `producto`, `cliente`, `proveedor` y datos canónicos. |
 | `src/main/java/com/gestiona/commerce/config/ConexionBD.java` | Patrón creacional **Singleton** para conexión JDBC a Supabase. |
 | `src/main/java/com/gestiona/commerce/util/PasswordUtil.java` | Utilidad de hashing y verificación con BCrypt (rounds=12). |
 | `src/main/java/com/gestiona/commerce/util/SeedUsuarios.java` | Generador canónico de hashes para inserción en BD. |
-| `src/main/java/com/gestiona/commerce/model/entity/Rol.java` | Entidad POJO Rol (RBAC). |
-| `src/main/java/com/gestiona/commerce/model/entity/Permiso.java` | Entidad POJO Permiso (RBAC). |
-| `src/main/java/com/gestiona/commerce/model/entity/Sexo.java` | Entidad POJO Sexo. |
-| `src/main/java/com/gestiona/commerce/model/entity/EstadoCivil.java` | Entidad POJO Estado Civil. |
-| `src/main/java/com/gestiona/commerce/model/entity/Distrito.java` | Entidad POJO Distrito (catálogo geográfico). |
-| `src/main/java/com/gestiona/commerce/model/entity/DatosPersonales.java` | Entidad POJO DatosPersonales (persona compartida D2). |
-| `src/main/java/com/gestiona/commerce/model/entity/Usuario.java` | Entidad POJO Usuario con soporte 3FN, rol, datos personales y bloqueo. |
+| `src/main/java/com/gestiona/commerce/model/entity/*.java` | Entidades POJO del dominio (`Usuario`, `DatosPersonales`, `Rol`, `Cliente`, `Proveedor`, `Producto`, etc.). |
 | `src/main/java/com/gestiona/commerce/model/repository/UsuarioRepository.java` | Interfaz del patrón **Repository** para Usuario. |
-| `src/main/java/com/gestiona/commerce/model/repository/UsuarioRepositoryImpl.java` | Implementación JDBC pura del patrón Repository con transacciones ACID. |
-| `src/main/java/com/gestiona/commerce/service/UsuarioService.java` | Servicio de negocio para CRUD de usuarios, validaciones y BCrypt. |
-| `src/main/java/com/gestiona/commerce/controller/UsuarioServlet.java` | Controlador `/usuarios` para el CRUD del dashboard administrativo. |
-| `src/main/webapp/WEB-INF/views/dashboard/usuarios-lista.jsp` | Vista de listado del CRUD con plantilla Tabler UI / Bootstrap 5. |
-| `src/main/webapp/WEB-INF/views/dashboard/usuarios-form.jsp` | Formulario de alta y edición con secciones de cuenta, persona y ubicación. |
-| `src/main/webapp/WEB-INF/views/bienvenida.jsp` | Vista de bienvenida con botón de acceso al Dashboard. |
-| `src/main/webapp/WEB-INF/web.xml` | Descriptor de despliegue con servlets mapeados. |
-| `docs/analisis/singleton.md` | Análisis en bloques del patrón Singleton. |
-| `docs/analisis/repository-usuarios.md` | Análisis en bloques del patrón Repository de usuarios. |
-| `docs/evidencias/etapa-1.md` | Evidencias y capturas de la Etapa 1. |
-| `docs/evidencias/etapa-2.md` | Evidencias y capturas de la Etapa 2. |
-| `docs/evidencias/etapa-3.md` | Evidencias y capturas de la Etapa 3. |
-| `docs/evidencias/etapa-4.md` | Evidencias y capturas de la Etapa 4. |
+| `src/main/java/com/gestiona/commerce/model/repository/UsuarioRepositoryImpl.java` | Implementación JDBC pura de Repository para Usuario. |
+| `src/main/java/com/gestiona/commerce/model/repository/ClienteRepository.java` | Interfaz de Repository para Cliente. |
+| `src/main/java/com/gestiona/commerce/model/repository/ClienteRepositoryImpl.java` | Implementación JDBC pura con transacciones atómicas para Cliente. |
+| `src/main/java/com/gestiona/commerce/model/repository/ProveedorRepository.java` | Interfaz de Repository para Proveedor. |
+| `src/main/java/com/gestiona/commerce/model/repository/ProveedorRepositoryImpl.java` | Implementación JDBC pura con transacciones atómicas para Proveedor. |
+| `src/main/java/com/gestiona/commerce/model/repository/ProductoRepository.java` | Interfaz de Repository para Producto. |
+| `src/main/java/com/gestiona/commerce/model/repository/ProductoRepositoryImpl.java` | Implementación JDBC pura con mapeo relacional multi-tabla para Producto. |
+| `src/main/java/com/gestiona/commerce/service/UsuarioService.java` | Servicio de negocio para CRUD de usuarios y validaciones. |
+| `src/main/java/com/gestiona/commerce/service/ClienteService.java` | Servicio de negocio para CRUD de clientes y validaciones DNI/RUC. |
+| `src/main/java/com/gestiona/commerce/service/ProveedorService.java` | Servicio de negocio para CRUD de proveedores y validaciones RUC. |
+| `src/main/java/com/gestiona/commerce/service/ProductoService.java` | Servicio de negocio para CRUD de productos, categorías y unidades. |
+| `src/main/java/com/gestiona/commerce/controller/*.java` | Controladores Servlets (`LoginServlet`, `BienvenidaServlet`, `UsuarioServlet`, `ClienteServlet`, `ProveedorServlet`, `ProductoServlet`). |
+| `src/main/webapp/WEB-INF/views/dashboard/*.jsp` | Vistas de listado y formularios con plantilla Tabler UI / Bootstrap 5. |
+| `docs/analisis/singleton.md` | Análisis en bloques del patrón Singleton (Paso 7). |
+| `docs/analisis/repository-usuarios.md` | Análisis en bloques del patrón Repository usuarios (Paso 10). |
+| `docs/analisis/repository-clientes-proveedores-productos.md` | Análisis en bloques del patrón Repository para entidades comerciales (Paso 12). |
+| `docs/evidencias/etapa-1.md` … `etapa-5.md` | Guías de evidencias paso a paso y marcadores de capturas. |
 
 ---
 
 ## 5. Cómo ejecutar el proyecto
 
-### Supabase
-- Ejecutar `database/etapa-4.sql` en Supabase SQL Editor para crear las tablas de datos personales, contacto, ubicación y vincular `id_datos_personales` en `usuario`.
+### Supabase (Base de Datos)
+1. Ejecutar `database/etapa-4.sql` si aún no se había corrido.
+2. Ejecutar `database/etapa-5.sql` en el SQL Editor de Supabase para crear las tablas de `categoria`, `marca`, `unidad_medida`, `producto`, `cliente` y `proveedor`, cargando los datos canónicos obligatorios.
 
 ### Local (NetBeans + Tomcat)
 1. Abrir el proyecto en Apache NetBeans como proyecto Maven.
 2. Contar con `.env` configurado en la raíz con `DB_URL`, `DB_USER` y `DB_PASSWORD`.
 3. Ejecutar (Run) en Apache Tomcat 10.1.
 
-### Render (producción)
-- Al hacer push a `main`, Render auto-despliega el servicio. Acceder a `/usuarios` tras iniciar sesión.
+### Render (Producción)
+- Cada push a la rama `main` dispara el despliegue automático en `https://gestiona-commerce.onrender.com`.
 
 ---
 
 ## 6. Pendientes y bloqueos actuales
 - **Acción requerida de la estudiante en Supabase:**
-  Ejecutar el script `database/etapa-4.sql` en el SQL Editor de Supabase.
-- **Acción requerida de evidencias:**
-  Tomar las 6 capturas indicadas en `docs/evidencias/etapa-4.md`.
+  Ejecutar el script `database/etapa-5.sql` en el SQL Editor de Supabase (y `database/etapa-4.sql` si faltaba).
+- **Acción requerida de evidencias para entrega académica:**
+  Tomar las capturas indicadas en `docs/evidencias/etapa-4.md` y `docs/evidencias/etapa-5.md` para armar el documento de entrega del **Avance 1**.
 
 ---
 
 ## 7. Próximo paso exacto
-- Tras la confirmación de la estudiante, iniciar la **Etapa 5 (CRUD de clientes, proveedores y mercadería/productos/insumos/servicios con Repository)**:
-  1. **Paso 11:** Crear script `database/etapa-5.sql` (tablas `categoria`, `marca`, `unidad_medida`, `producto`, `cliente`, `proveedor`), implementar repositorios y servicios (`ClienteRepository`, `ProveedorRepository`, `ProductoRepository`), y vistas de gestión en el dashboard.
-  2. **Paso 12:** Redactar el análisis en bloques de código del patrón Repository para entidades comerciales en `docs/analisis/repository-clientes-proveedores-productos.md`.
+- **¡Avance 1 Completado con Éxito!**
+- El alcance acordado en `AGENTS.md` (Etapas 1 a 5, Pasos 1 al 12) ha finalizado satisfactoriamente.
+- No construir ventas ni reportes (Etapa 6 en adelante) hasta que el docente evalúe el Avance 1 y la estudiante lo indique expresamente.
