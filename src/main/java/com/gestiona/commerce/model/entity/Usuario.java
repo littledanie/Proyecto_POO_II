@@ -19,6 +19,8 @@ public class Usuario implements Serializable {
     private String contrasenaHash;
     private Integer idRol;
     private Rol rol; // Objeto de relación con Rol
+    private Integer idDatosPersonales;
+    private DatosPersonales datosPersonales; // Persona asociada (Etapa 4)
     private Timestamp ultimoAcceso;
     private int intentosFallidos;
     private boolean bloqueado;
@@ -77,6 +79,22 @@ public class Usuario implements Serializable {
 
     public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    public Integer getIdDatosPersonales() {
+        return idDatosPersonales;
+    }
+
+    public void setIdDatosPersonales(Integer idDatosPersonales) {
+        this.idDatosPersonales = idDatosPersonales;
+    }
+
+    public DatosPersonales getDatosPersonales() {
+        return datosPersonales;
+    }
+
+    public void setDatosPersonales(DatosPersonales datosPersonales) {
+        this.datosPersonales = datosPersonales;
     }
 
     public Timestamp getUltimoAcceso() {
