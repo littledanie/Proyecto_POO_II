@@ -48,4 +48,31 @@
         <servlet-name>UsuarioServlet</servlet-name>
         <url-pattern>/usuarios</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ClienteServlet</servlet-name>
+        <servlet-class>com.gestiona.commerce.controller.ClienteServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ClienteServlet</servlet-name>
+        <url-pattern>/clientes</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ProveedorServlet</servlet-name>
+        <servlet-class>com.gestiona.commerce.controller.ProveedorServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProveedorServlet</servlet-name>
+        <url-pattern>/proveedores</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ProductoServlet</servlet-name>
+        <servlet-class>com.gestiona.commerce.controller.ProductoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductoServlet</servlet-name>
+        <url-pattern>/productos</url-pattern>
+    </servlet-mapping>
 </web-app>

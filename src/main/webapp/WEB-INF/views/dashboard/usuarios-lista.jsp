@@ -81,19 +81,19 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <span class="nav-link disabled text-muted" title="Disponible en Etapa 5">
-                                Clientes <small class="badge bg-secondary-subtle text-secondary ms-1">Etapa 5</small>
-                            </span>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/clientes">
+                                <span class="nav-link-title">Clientes</span>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <span class="nav-link disabled text-muted" title="Disponible en Etapa 5">
-                                Proveedores <small class="badge bg-secondary-subtle text-secondary ms-1">Etapa 5</small>
-                            </span>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/proveedores">
+                                <span class="nav-link-title">Proveedores</span>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <span class="nav-link disabled text-muted" title="Disponible en Etapa 5">
-                                Productos <small class="badge bg-secondary-subtle text-secondary ms-1">Etapa 5</small>
-                            </span>
+                            <a class="nav-link" href="${pageContext.request.contextPath}/productos">
+                                <span class="nav-link-title">Productos</span>
+                            </a>
                         </li>
                     </ul>
                 </div>

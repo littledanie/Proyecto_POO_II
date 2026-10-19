@@ -61,11 +61,26 @@
                 La autenticación verificó tu contraseña contra el hash <strong>BCrypt</strong> almacenado en Supabase,
                 utilizando una única instancia global mediante el patrón creacional <strong>Singleton</strong>.
             </p>
-            <div style="margin-top: 1.25rem;">
+            <div style="margin-top: 1.25rem; display: flex; flex-wrap: wrap; gap: 0.75rem;">
                 <a href="${pageContext.request.contextPath}/usuarios" 
                    style="display: inline-flex; align-items: center; gap: 0.5rem; background-color: #059669; color: #ffffff; padding: 0.625rem 1.25rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.9375rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15);">
-                    <span>Ir al Dashboard de Usuarios (Etapa 4)</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    <span>Usuarios</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+                <a href="${pageContext.request.contextPath}/clientes" 
+                   style="display: inline-flex; align-items: center; gap: 0.5rem; background-color: #0284c7; color: #ffffff; padding: 0.625rem 1.25rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.9375rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15);">
+                    <span>Clientes</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+                <a href="${pageContext.request.contextPath}/proveedores" 
+                   style="display: inline-flex; align-items: center; gap: 0.5rem; background-color: #7c3aed; color: #ffffff; padding: 0.625rem 1.25rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.9375rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15);">
+                    <span>Proveedores</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+                <a href="${pageContext.request.contextPath}/productos" 
+                   style="display: inline-flex; align-items: center; gap: 0.5rem; background-color: #d97706; color: #ffffff; padding: 0.625rem 1.25rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.9375rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.15);">
+                    <span>Productos</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </a>
             </div>
         </section>
