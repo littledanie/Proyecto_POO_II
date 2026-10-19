@@ -44,6 +44,14 @@ public class Proveedor implements Serializable {
         this.contactoPersona = contactoPersona;
     }
 
+    public DatosPersonales getDatosPersonales() {
+        return contactoPersona;
+    }
+
+    public void setDatosPersonales(DatosPersonales datosPersonales) {
+        this.contactoPersona = datosPersonales;
+    }
+
     public String getRuc() {
         return ruc;
     }

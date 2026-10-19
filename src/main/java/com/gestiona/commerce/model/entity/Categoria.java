@@ -41,6 +41,14 @@ public class Categoria implements Serializable {
         this.nombreCategoria = nombreCategoria;
     }
 
+    public String getNombre() {
+        return nombreCategoria;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombreCategoria = nombre;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }

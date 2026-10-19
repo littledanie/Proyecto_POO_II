@@ -39,6 +39,14 @@ public class Marca implements Serializable {
         this.nombreMarca = nombreMarca;
     }
 
+    public String getNombre() {
+        return nombreMarca;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombreMarca = nombre;
+    }
+
     public String getEstado() {
         return estado;
     }

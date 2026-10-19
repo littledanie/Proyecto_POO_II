@@ -128,6 +128,18 @@ public class Producto implements Serializable {
         this.unidadMedida = unidadMedida;
     }
 
+    public String getNombreCategoria() {
+        return categoria != null ? categoria.getNombre() : null;
+    }
+
+    public String getNombreMarca() {
+        return marca != null ? marca.getNombre() : null;
+    }
+
+    public String getAbreviaturaUnidad() {
+        return unidadMedida != null ? unidadMedida.getAbreviatura() : null;
+    }
+
     public BigDecimal getPrecioCompra() {
         return precioCompra;
     }
